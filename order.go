@@ -130,29 +130,39 @@ type Links struct {
 }
 
 type Billing struct {
-	FirstName string `json:"first_name,omitempty"`
-	LastName  string `json:"last_name,omitempty"`
-	Company   string `json:"company,omitempty"`
-	Address1  string `json:"address_1,omitempty"`
-	Address2  string `json:"address_2,omitempty"`
-	City      string `json:"city,omitempty"`
-	State     string `json:"state,omitempty"`
-	PostCode  string `json:"postcode,omitempty"`
-	Country   string `json:"country,omitempty"`
-	Email     string `json:"email,omitempty"`
-	Phone     string `json:"phone,omitempty"`
+	FirstName    string `json:"first_name,omitempty"`
+	LastName     string `json:"last_name,omitempty"`
+	Company      string `json:"company,omitempty"`
+	Address1     string `json:"address_1,omitempty"`
+	Address2     string `json:"address_2,omitempty"`
+	City         string `json:"city,omitempty"`
+	State        string `json:"state,omitempty"`
+	PostCode     string `json:"postcode,omitempty"`
+	Country      string `json:"country,omitempty"`
+	Email        string `json:"email,omitempty"`
+	Phone        string `json:"phone,omitempty"`
+	CPF          string `json:"cpf,omitempty"`
+	CNPJ         string `json:"cnpj,omitempty"`
+	IE           string `json:"ie,omitempty"`
+	Number       string `json:"number,omitempty"`
+	Neighborhood string `json:"neighborhood,omitempty"`
+	PersonType   string `json:"persontype,omitempty"`
+	BirthDate    string `json:"birthdate,omitempty"`
+	CellPhone    string `json:"cellphone,omitempty"`
 }
 
 type Shipping struct {
-	FirstName string `json:"first_name,omitempty"`
-	LastName  string `json:"last_name,omitempty"`
-	Company   string `json:"company,omitempty"`
-	Address1  string `json:"address_1,omitempty"`
-	Address2  string `json:"address_2,omitempty"`
-	City      string `json:"city,omitempty"`
-	State     string `json:"state,omitempty"`
-	PostCode  string `json:"postcode,omitempty"`
-	Country   string `json:"country,omitempty"`
+	FirstName    string `json:"first_name,omitempty"`
+	LastName     string `json:"last_name,omitempty"`
+	Company      string `json:"company,omitempty"`
+	Address1     string `json:"address_1,omitempty"`
+	Address2     string `json:"address_2,omitempty"`
+	City         string `json:"city,omitempty"`
+	State        string `json:"state,omitempty"`
+	PostCode     string `json:"postcode,omitempty"`
+	Country      string `json:"country,omitempty"`
+	Number       string `json:"number,omitempty"`
+	Neighborhood string `json:"neighborhood,omitempty"`
 }
 
 type LineItem struct {
