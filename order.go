@@ -3,6 +3,8 @@ package woocommerce
 import (
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 const (
@@ -115,9 +117,13 @@ type Order struct {
 	FeeLines           []FeeLine       `json:"fee_lines,omitempty"`
 	CouponLines        []CouponLine    `json:"coupon_lines,omitempty"`
 	Refunds            []Refund        `json:"refunds,omitempty"`
+	PaymentUrl         string          `json:"payment_url,omitempty"`
 	CurrencySymbol     string          `json:"currency_symbol,omitempty"`
 	Links              Links           `json:"_links"`
 	SetPaid            bool            `json:"set_paid,omitempty"`
+	IsEditable         bool            `json:"is_editable,omitempty"`
+	NeedsPayment       bool            `json:"needs_payment,omitempty"`
+	NeedsProcessing    bool            `json:"needs_processing,omitempty"`
 }
 
 type Links struct {
@@ -127,28 +133,40 @@ type Links struct {
 	Collection []struct {
 		Href string `json:"href"`
 	} `json:"collection"`
+	Customer []struct {
+		Href string `json:"href"`
+	} `json:"customer"`
 }
 
 type Billing struct {
-	FirstName    string `json:"first_name,omitempty"`
-	LastName     string `json:"last_name,omitempty"`
-	Company      string `json:"company,omitempty"`
-	Address1     string `json:"address_1,omitempty"`
-	Address2     string `json:"address_2,omitempty"`
-	City         string `json:"city,omitempty"`
-	State        string `json:"state,omitempty"`
-	PostCode     string `json:"postcode,omitempty"`
-	Country      string `json:"country,omitempty"`
-	Email        string `json:"email,omitempty"`
-	Phone        string `json:"phone,omitempty"`
-	CPF          string `json:"cpf,omitempty"`
-	CNPJ         string `json:"cnpj,omitempty"`
-	IE           string `json:"ie,omitempty"`
-	Number       string `json:"number,omitempty"`
-	Neighborhood string `json:"neighborhood,omitempty"`
-	PersonType   string `json:"persontype,omitempty"`
-	BirthDate    string `json:"birthdate,omitempty"`
-	CellPhone    string `json:"cellphone,omitempty"`
+	FirstName    string    `json:"first_name,omitempty"`
+	LastName     string    `json:"last_name,omitempty"`
+	Company      string    `json:"company,omitempty"`
+	Address1     string    `json:"address_1,omitempty"`
+	Address2     string    `json:"address_2,omitempty"`
+	City         string    `json:"city,omitempty"`
+	State        string    `json:"state,omitempty"`
+	PostCode     string    `json:"postcode,omitempty"`
+	Country      string    `json:"country,omitempty"`
+	Email        string    `json:"email,omitempty"`
+	Phone        string    `json:"phone,omitempty"`
+	CPF          string    `json:"cpf,omitempty"`
+	RG           string    `json:"rg,omitempty"`
+	CNPJ         string    `json:"cnpj,omitempty"`
+	IE           string    `json:"ie,omitempty"`
+	Number       Stringint `json:"number,omitempty"`
+	Neighborhood string    `json:"neighborhood,omitempty"`
+	PersonType   string    `json:"persontype,omitempty"`
+	BirthDate    string    `json:"birthdate,omitempty"`
+	CellPhone    string    `json:"cellphone,omitempty"`
+	Sex          string    `json:"sex,omitempty"`
+	ChurchEmail  string    `json:"church_email,omitempty"`
+	ChurchSize   Stringint `json:"church_size,omitempty"`
+	PayerName    string    `json:"payer_name,omitempty"`
+	PayerEmail   string    `json:"payer_email,omitempty"`
+	PayerPhone   string    `json:"payer_phone,omitempty"`
+	Church       string    `json:"church,omitempty"`
+	Size         Stringint `json:"size,omitempty"`
 }
 
 type Shipping struct {
@@ -163,13 +181,15 @@ type Shipping struct {
 	Country      string `json:"country,omitempty"`
 	Number       string `json:"number,omitempty"`
 	Neighborhood string `json:"neighborhood,omitempty"`
+	Phone        string `json:"phone,omitempty"`
+	Email        string `json:"email,omitempty"`
 }
 
 type LineItem struct {
 	ID          int64      `json:"id,omitempty"`
 	Name        string     `json:"name,omitempty"`
 	ProductID   int64      `json:"product_id,omitempty"`
-	VariantID   int64      `json:"variant_id,omitempty"`
+	VariantID   int64      `json:"variation_id,omitempty"`
 	Quantity    int        `json:"quantity,omitempty"`
 	TaxClass    string     `json:"tax_class,omitempty"`
 	SubTotal    string     `json:"subtotal,omitempty"`
@@ -180,6 +200,30 @@ type LineItem struct {
 	MetaData    []MetaData `json:"meta_data,omitempty"`
 	SKU         string     `json:"sku,omitempty"`
 	Price       float64    `json:"price,omitempty"`
+	Image       Image      `json:"image,omitempty"`
+	ParentName  string     `json:"parent_name,omitempty"`
+}
+
+type Stringint int64
+
+func (i *Stringint) UnmarshalJSON(id []byte) error {
+	s := string(id)
+	if s == "" || s == "\"\"" {
+		*i = Stringint(0)
+		return nil
+	}
+	i_, err := strconv.Atoi(strings.ReplaceAll(string(id), `"`, ""))
+	*i = Stringint(i_)
+	return err
+}
+
+func (i *Stringint) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%d", *i)), nil
+}
+
+type Image struct {
+	ID  Stringint `json:"id,omitempty"`
+	Src string    `json:"src,omitempty"`
 }
 
 type TaxLine struct {
@@ -194,9 +238,11 @@ type TaxLine struct {
 }
 
 type MetaData struct {
-	ID    int64       `json:"id,omitempty"`
-	Key   string      `json:"key,omitempty"`
-	Value interface{} `json:"value,omitempty"`
+	ID           int64       `json:"id,omitempty"`
+	Key          string      `json:"key,omitempty"`
+	Value        interface{} `json:"value,omitempty"`
+	DisplayKey   string      `json:"display_key,omitempty"`
+	DisplayValue interface{} `json:"display_value,omitempty"`
 }
 
 type FeeLine struct {

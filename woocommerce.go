@@ -19,7 +19,7 @@ import (
 
 const (
 	UserAgent            = "woocommerce/1.0.0"
-	defaultHttpTimeout   = 10
+	defaultHttpTimeout   = 30
 	defaultApiPathPrefix = "/wp-json/wc/v3"
 	defaultVersion       = "v3"
 )
@@ -86,7 +86,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 		Client: &http.Client{
 			Timeout: time.Second * defaultHttpTimeout,
 		},
-		log:        &LeveledLogger{},
+		log:        &LeveledLogger{Level: LevelWarn},
 		app:        app,
 		baseURL:    baseURL,
 		version:    defaultVersion,
@@ -180,6 +180,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 
 	if v != nil {
 		decoder := json.NewDecoder(resp.Body)
+		decoder.DisallowUnknownFields()
 		err := decoder.Decode(&v)
 		if err != nil {
 			return nil, err
@@ -443,7 +444,7 @@ func (c *Client) Delete(path string, options, resource interface{}) error {
 	return c.CreateAndDo("DELETE", path, nil, options, resource)
 }
 
-//  ListOptions represent ist options that can be used for most collections of entities.
+// ListOptions represent ist options that can be used for most collections of entities.
 type ListOptions struct {
 	Context string  `url:"context,omitempty"`
 	Page    int     `url:"page,omitempty"`
