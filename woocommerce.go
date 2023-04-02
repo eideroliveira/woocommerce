@@ -52,7 +52,7 @@ type Client struct {
 	log        LeveledLoggerInterface
 	baseURL    *url.URL
 	pathPrefix string
-	token      string
+	// token      string
 
 	// max number of retries, defaults to 0 for no retries see WithRetry option
 	retries  int
@@ -64,6 +64,7 @@ type Client struct {
 	OrderNote      OrderNoteService
 	Webhook        WebhookService
 	PaymentGateway PaymentGatewayService
+	Subscription   SubscriptionService
 }
 
 // NewClient returns a new WooCommerce API client with an already authenticated shopname and
@@ -97,6 +98,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 	c.OrderNote = &OrderNoteServiceOp{client: c}
 	c.Webhook = &WebhookServiceOp{client: c}
 	c.PaymentGateway = &PaymentGatewayServiceOp{client: c}
+	c.Subscription = &SubscriptionServiceOp{client: c}
 	for _, opt := range opts {
 		opt(c)
 	}

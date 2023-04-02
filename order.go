@@ -2,7 +2,6 @@ package woocommerce
 
 import (
 	"fmt"
-	"net/http"
 	"strconv"
 	"strings"
 )
@@ -124,6 +123,7 @@ type Order struct {
 	IsEditable         bool            `json:"is_editable,omitempty"`
 	NeedsPayment       bool            `json:"needs_payment,omitempty"`
 	NeedsProcessing    bool            `json:"needs_processing,omitempty"`
+	TrackingCode       string          `json:"correios_tracking_code,omitempty"`
 }
 
 type Links struct {
@@ -287,9 +287,9 @@ func (o *OrderServiceOp) List(options interface{}) ([]Order, error) {
 
 // ListWithPagination lists products and return pagination to retrieve next/previous results.
 func (o *OrderServiceOp) ListWithPagination(options interface{}) ([]Order, *Pagination, error) {
-	path := fmt.Sprintf("%s", ordersBasePath)
+	path := ordersBasePath
 	resource := make([]Order, 0)
-	headers := http.Header{}
+	// headers := http.Header{}
 	headers, err := o.client.createAndDoGetHeaders("GET", path, nil, options, &resource)
 	if err != nil {
 		return nil, nil, err
@@ -306,7 +306,7 @@ func (o *OrderServiceOp) ListWithPagination(options interface{}) ([]Order, *Pagi
 }
 
 func (o *OrderServiceOp) Create(order Order) (*Order, error) {
-	path := fmt.Sprintf("%s", ordersBasePath)
+	path := ordersBasePath
 	resource := new(Order)
 
 	err := o.client.Post(path, order, &resource)
