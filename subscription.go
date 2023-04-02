@@ -91,7 +91,7 @@ type Subscription struct {
 	StartDateGmt             string          `json:"start_date_gmt,omitempty"`
 	TrialEnd                 string          `json:"trial_end_date,omitempty"`
 	TrialEndGmt              string          `json:"trial_end_date_gmt,omitempty"`
-	NextPayment              string          `json:"next_payment_date,omitempty"`
+	NextPaymentDate          string          `json:"next_payment_date,omitempty"`
 	NextPaymentDateGmt       string          `json:"next_payment_date_gmt,omitempty"`
 	LastPaymentDate          string          `json:"last_payment_date,omitempty"`
 	LastPaymentDateGmt       string          `json:"last_payment_date_gmt,omitempty"`
