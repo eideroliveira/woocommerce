@@ -83,7 +83,7 @@ type Order struct {
 	Version            string          `json:"version,omitempty"`
 	Status             string          `json:"status,omitempty"`
 	Currency           string          `json:"currency,omitempty"`
-	DateCreated        string          `json:"date_created,omitempty"`
+	DateCreated        string          `json:"datecreated,omitempty"`
 	DateCreatedGmt     string          `json:"date_created_gmt,omitempty"`
 	DateModified       string          `json:"date_modified,omitempty"`
 	DateModifiedGmt    string          `json:"date_modified_gmt,omitempty"`
@@ -134,6 +134,9 @@ type Links struct {
 		Href string `json:"href"`
 	} `json:"collection"`
 	Customer []struct {
+		Href string `json:"href"`
+	} `json:"customer"`
+	Up []struct {
 		Href string `json:"href"`
 	} `json:"customer"`
 }
