@@ -19,7 +19,7 @@ import (
 
 const (
 	UserAgent            = "woocommerce/1.0.0"
-	defaultHttpTimeout   = 30
+	defaultHttpTimeout   = 60
 	defaultApiPathPrefix = "/wp-json/wc/v3"
 	defaultVersion       = "v3"
 )
@@ -58,13 +58,15 @@ type Client struct {
 	retries  int
 	attempts int
 
-	RateLimits     RateLimitInfo
-	Product        ProductService
-	Order          OrderService
-	OrderNote      OrderNoteService
-	Webhook        WebhookService
-	PaymentGateway PaymentGatewayService
-	Subscription   SubscriptionService
+	RateLimits        RateLimitInfo
+	Product           ProductService
+	Order             OrderService
+	OrderNote         OrderNoteService
+	Webhook           WebhookService
+	PaymentGateway    PaymentGatewayService
+	Subscription      SubscriptionService
+	SubscriptionNote  SubscriptionNoteService
+	SubscriptionOrder SubscriptionOrderService
 }
 
 // NewClient returns a new WooCommerce API client with an already authenticated shopname and
@@ -79,7 +81,8 @@ func (a App) NewClient(shopName string, opts ...Option) *Client {
 // token. The shopName parameter is the shop's wooCommerce website domain,
 // e.g. "shop.gitvim.com"
 func NewClient(app App, shopName string, opts ...Option) *Client {
-	baseURL, err := url.Parse(ShopBaseURL(shopName))
+	// baseURL, err := url.Parse(ShopBaseURL(shopName))
+	baseURL, err := url.Parse(shopName)
 	if err != nil {
 		panic(err)
 	}
@@ -87,7 +90,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 		Client: &http.Client{
 			Timeout: time.Second * defaultHttpTimeout,
 		},
-		log:        &LeveledLogger{Level: LevelDebug},
+		log:        &LeveledLogger{Level: LevelWarn},
 		app:        app,
 		baseURL:    baseURL,
 		version:    defaultVersion,
@@ -99,6 +102,8 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 	c.Webhook = &WebhookServiceOp{client: c}
 	c.PaymentGateway = &PaymentGatewayServiceOp{client: c}
 	c.Subscription = &SubscriptionServiceOp{client: c}
+	c.SubscriptionNote = &SubscriptionNoteServiceOp{client: c}
+	c.SubscriptionOrder = &SubscriptionOrderServiceOp{client: c}
 	for _, opt := range opts {
 		opt(c)
 	}

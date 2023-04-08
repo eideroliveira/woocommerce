@@ -124,6 +124,7 @@ type Order struct {
 	NeedsPayment       bool            `json:"needs_payment,omitempty"`
 	NeedsProcessing    bool            `json:"needs_processing,omitempty"`
 	TrackingCode       string          `json:"correios_tracking_code,omitempty"`
+	OrderType          string          `json:"order_type,omitempty"`
 }
 
 type Links struct {
@@ -299,13 +300,12 @@ func (o *OrderServiceOp) ListWithPagination(options interface{}) ([]Order, *Pagi
 	}
 	// Extract pagination info from header
 	linkHeader := headers.Get("Link")
-	fmt.Println(linkHeader)
-	// pagination, err := extractPagination(linkHeader)
-	// if err != nil {
-	// 	return nil, nil, err
-	// }
+	pagination, err := extractPagination(linkHeader)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	return resource, nil, err
+	return resource, pagination, err
 }
 
 func (o *OrderServiceOp) Create(order Order) (*Order, error) {

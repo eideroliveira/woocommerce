@@ -37,15 +37,15 @@ type SubscriptionServiceOp struct {
 // exclude	array	Ensure result set excludes specific IDs.
 // include	array	Limit result set to specific ids.
 // offset	integer	Offset the result set by a specific number of items.
-// subscription	string	Subscription sort attribute ascending or descending. Options: asc and desc. Default is desc.
-// subscriptionby	string	Sort collection by object attribute. Options: date, id, include, title and slug. Default is date.
+// order	string	Subscription sort attribute ascending or descending. Options: asc and desc. Default is desc.
+// orderby	string	Sort collection by object attribute. Options: date, id, include, title and slug. Default is date.
 // parent	array	Limit result set to those of particular parent IDs.
 // parent_exclude	array	Limit result set to all items except those of a particular parent ID.
 // status	array	Limit result set to subscriptions assigned a specific status. Options: any, pending, processing, on-hold, completed, cancelled, refunded, failed and trash. Default is any.
 // customer	integer	Limit result set to subscriptions assigned a specific customer.
 // product	integer	Limit result set to subscriptions assigned a specific product.
 // dp	integer	Number of decimal points to use in each resource. Default is 2.
-type SubscriptionListOption struct {
+type SubscriptionListOptions struct {
 	ListOptions
 	Parent        []int64  `url:"parent,omitempty"`
 	ParentExclude []int64  `url:"parent_exclude,omitempty"`
@@ -159,13 +159,12 @@ func (o *SubscriptionServiceOp) ListWithPagination(options interface{}) ([]Subsc
 	}
 	// Extract pagination info from header
 	linkHeader := headers.Get("Link")
-	fmt.Println(linkHeader)
-	// pagination, err := extractPagination(linkHeader)
-	// if err != nil {
-	// 	return nil, nil, err
-	// }
+	pagination, err := extractPagination(linkHeader)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	return resource, nil, err
+	return resource, pagination, err
 }
 
 func (o *SubscriptionServiceOp) Create(subscription Subscription) (*Subscription, error) {

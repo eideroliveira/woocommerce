@@ -61,6 +61,8 @@ func (p *ProductServiceOp) BatchUpdate() {
 
 }
 
+var log = &LeveledLogger{Level: LevelWarn}
+
 // extractPagination extracts pagination info from linkHeader.
 // Details on the format are here:
 // https://woocommerce.github.io/woocommerce-rest-api-docs/#pagination
@@ -76,15 +78,16 @@ func extractPagination(linkHeader string) (*Pagination, error) {
 	for _, link := range strings.Split(linkHeader, ",") {
 		match := linkRegex.FindStringSubmatch(link)
 		// Make sure the link is not empty or invalid
-		println("mm", len(match))
-		if len(match) != 4 {
+		if len(match) != 3 {
+			println("mm", len(match), " ", link, match)
 			// We expect 3 values:
 			// match[0] = full match
 			// match[1] is the URL and match[2] is either 'previous' or 'next', 'first', 'last'
 			err := ResponseDecodingError{
 				Message: "could not extract pagination link header",
 			}
-			return nil, err
+			log.Errorf("could not extract pagination link header: %s", err)
+			return nil, nil
 		}
 
 		rel, err := url.Parse(match[1])
