@@ -79,14 +79,13 @@ func extractPagination(linkHeader string) (*Pagination, error) {
 		match := linkRegex.FindStringSubmatch(link)
 		// Make sure the link is not empty or invalid
 		if len(match) != 3 {
-			println("mm", len(match), " ", link, match)
+			// println("mm", len(match), " ", link, match)
 			// We expect 3 values:
 			// match[0] = full match
 			// match[1] is the URL and match[2] is either 'previous' or 'next', 'first', 'last'
-			err := ResponseDecodingError{
-				Message: "could not extract pagination link header",
-			}
-			log.Errorf("could not extract pagination link header: %s", err)
+			// err := ResponseDecodingError{
+			// 	Message: "could not extract pagination link header from " + linkHeader,
+			// }
 			return nil, nil
 		}
 

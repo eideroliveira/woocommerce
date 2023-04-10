@@ -90,7 +90,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 		Client: &http.Client{
 			Timeout: time.Second * defaultHttpTimeout,
 		},
-		log:        &LeveledLogger{Level: LevelWarn},
+		log:        &LeveledLogger{Level: LevelInfo},
 		app:        app,
 		baseURL:    baseURL,
 		version:    defaultVersion,
@@ -142,6 +142,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 
 		c.logResponse(resp)
 		if err != nil {
+			c.log.Errorf("HTTP Error: %v", err)
 			return nil, err //http client errors, not api responses
 		}
 
@@ -149,6 +150,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 		if respErr == nil {
 			break // no errors, break out of the retry loop
 		}
+		c.log.Errorf("API error %v", respErr)
 
 		// retry scenario, close resp and any continue will retry
 		resp.Body.Close()
@@ -218,12 +220,17 @@ func CheckResponseError(r *http.Response) error {
 	woocommerceError := struct {
 		Code    string      `json:"code"`
 		Message string      `json:"message"`
+		Status  string      `json:"status"`
+		Error   string      `json:"error"`
 		Data    interface{} `json:"data"`
 	}{}
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return err
+		return ResponseError{
+			Status:  r.StatusCode,
+			Message: err.Error(),
+		}
 	}
 
 	// empty body, this probably means WooCommerce returned an error with no body
@@ -231,12 +238,14 @@ func CheckResponseError(r *http.Response) error {
 	if len(bodyBytes) > 0 {
 		err := json.Unmarshal(bodyBytes, &woocommerceError)
 		if err != nil {
+			log.Errorf("CheckResponseError unmarshall: '%v' %v", string(bodyBytes), err)
 			return ResponseDecodingError{
 				Body:    bodyBytes,
 				Message: err.Error(),
 				Status:  r.StatusCode,
 			}
 		} else {
+			log.Errorf("CheckResponseError response error '%v': %v", string(bodyBytes), woocommerceError)
 			return ResponseError{
 				Status:  r.StatusCode,
 				Message: woocommerceError.Message,
@@ -249,6 +258,7 @@ func CheckResponseError(r *http.Response) error {
 		Status:  r.StatusCode,
 		Message: woocommerceError.Message,
 	}
+	log.Errorf("CheckResponseError, generic: %v", responseError)
 
 	// If the errors field is not filled out, we can return here.
 	if woocommerceError.Message == "" {
@@ -285,7 +295,7 @@ func CheckResponseError(r *http.Response) error {
 	// 			}
 	// 		}
 	// 	}
-
+	log.Errorf("CheckResponseError: %v", responseError)
 	return wrapSpecificError(r, responseError)
 }
 
@@ -328,7 +338,7 @@ type ResponseError struct {
 }
 
 func (e ResponseError) Error() string {
-	return e.Message
+	return fmt.Sprintf("%v: %v [%v]", e.Status, e.Message, e.Data)
 }
 
 // An error specific to a rate-limiting response. Embeds the ResponseError to
@@ -349,7 +359,7 @@ func wrapSpecificError(r *http.Response, err ResponseError) error {
 	if err.Status == http.StatusNotAcceptable {
 		err.Message = http.StatusText(err.Status)
 	}
-
+	log.Errorf("wrapSpecificError: %v", err)
 	return err
 }
 
@@ -370,9 +380,9 @@ func (c *Client) createAndDoGetHeaders(method, relPath string, data, options, re
 	}
 
 	relPath = path.Join(c.pathPrefix, relPath)
-	//println("relPath:", relPath)
 	req, err := c.NewRequest(method, relPath, data, options)
 	if err != nil {
+		c.log.Errorf("Error creating request: %s", err)
 		return nil, err
 	}
 	return c.doGetHeaders(req, resource)
