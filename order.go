@@ -125,6 +125,7 @@ type Order struct {
 	NeedsProcessing    bool            `json:"needs_processing,omitempty"`
 	TrackingCode       string          `json:"correios_tracking_code,omitempty"`
 	OrderType          string          `json:"order_type,omitempty"`
+	Amount             string          `json:"amount,omitempty"`
 }
 
 type Links struct {
