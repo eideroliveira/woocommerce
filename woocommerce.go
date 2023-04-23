@@ -58,6 +58,7 @@ type Client struct {
 	retries  int
 	attempts int
 
+	Customer          CustomerService
 	RateLimits        RateLimitInfo
 	Product           ProductService
 	Order             OrderService
@@ -90,12 +91,13 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 		Client: &http.Client{
 			Timeout: time.Second * defaultHttpTimeout,
 		},
-		log:        &LeveledLogger{Level: LevelInfo},
+		log:        &LeveledLogger{Level: LevelDebug},
 		app:        app,
 		baseURL:    baseURL,
 		version:    defaultVersion,
 		pathPrefix: defaultApiPathPrefix,
 	}
+	c.Customer = &CustomerServiceOp{client: c}
 	c.Product = &ProductServiceOp{client: c}
 	c.Order = &OrderServiceOp{client: c}
 	c.OrderNote = &OrderNoteServiceOp{client: c}
@@ -305,6 +307,7 @@ func (c *Client) logRequest(req *http.Request) {
 	}
 	if req.URL != nil {
 		c.log.Debugf("%s: %s", req.Method, req.URL.String())
+		c.log.Debugf("%s", req.Header)
 	}
 	c.logBody(&req.Body, "SENT: %s")
 }
@@ -322,10 +325,14 @@ func (c *Client) logBody(body *io.ReadCloser, format string) {
 		return
 	}
 	b, _ := ioutil.ReadAll(*body)
+	bBuf := bytes.NewBuffer(b)
 	if len(b) > 0 {
-		c.log.Debugf(format, string(b))
+		buf := bytes.Buffer{}
+		json.Indent(&buf, b, "", " ")
+
+		c.log.Debugf(format, buf.String())
 	}
-	*body = ioutil.NopCloser(bytes.NewBuffer(b))
+	*body = io.NopCloser(bBuf)
 }
 
 // ResponseError is A general response error that follows a similar layout to WooCommerce's response

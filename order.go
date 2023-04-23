@@ -2,6 +2,7 @@ package woocommerce
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -125,7 +126,6 @@ type Order struct {
 	NeedsProcessing    bool            `json:"needs_processing,omitempty"`
 	TrackingCode       string          `json:"correios_tracking_code,omitempty"`
 	OrderType          string          `json:"order_type,omitempty"`
-	Amount             string          `json:"amount,omitempty"`
 }
 
 type Links struct {
@@ -174,6 +174,18 @@ type Billing struct {
 	Size         Stringint `json:"size,omitempty"`
 }
 
+func (c *Billing) String() string {
+	res := []string{}
+	for i := 0; i < reflect.TypeOf(*c).NumField(); i++ {
+		l := reflect.ValueOf(*c).Field(i)
+		if !l.IsZero() {
+			f := reflect.TypeOf(*c).Field(i)
+			res = append(res, fmt.Sprintf("%v: %v", f.Name, l))
+		}
+	}
+	return strings.Join(res, "\n")
+}
+
 type Shipping struct {
 	FirstName    string `json:"first_name,omitempty"`
 	LastName     string `json:"last_name,omitempty"`
@@ -217,7 +229,7 @@ func (i *Stringint) UnmarshalJSON(id []byte) error {
 		*i = Stringint(0)
 		return nil
 	}
-	i_, err := strconv.Atoi(strings.ReplaceAll(string(id), `"`, ""))
+	i_, err := strconv.Atoi(strings.Trim(strings.ReplaceAll(string(id), `"`, ""), " "))
 	*i = Stringint(i_)
 	return err
 }
@@ -255,6 +267,7 @@ type FeeLine struct {
 	Name      string     `json:"name,omitempty"`
 	TaxClass  string     `json:"tax_class,omitempty"`
 	TaxStatus string     `json:"tax_status,omitempty"`
+	Amount    string     `json:"amount,omitempty"`
 	Total     string     `json:"total,omitempty"`
 	TotalTax  string     `json:"total_tax,omitempty"`
 	Taxes     []TaxLine  `json:"taxes,omitempty"`
