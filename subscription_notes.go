@@ -73,7 +73,7 @@ type SubscriptionNote struct {
 	DateCreated    string `json:"date_created,omitempty"`
 	DateCreatedGmt string `json:"date_created_gmt,omitempty"`
 	Note           string `json:"note,omitempty"`
-	CustomerNote   bool   `json:"custsomer_note,omitempty"`
+	CustomerNote   bool   `json:"customer_note,omitempty"`
 	AddedByUser    bool   `json:"added_by_user,omitempty"`
 	Author         string `json:"author,omitempty"`
 	Links          Links  `json:"_links"`
