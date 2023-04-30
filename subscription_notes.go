@@ -11,7 +11,7 @@ const (
 // SubscriptionNoteService is an interface for interfacing with the subscriptionnotes endpoints of woocommerce API
 // https://woocommerce.github.io/woocommerce-rest-api-docs/#subscriptionnotes
 type SubscriptionNoteService interface {
-	Create(subscriptionId int64, subscriptionNote SubscriptionNote) (*SubscriptionNote, error)
+	Create(subscriptionId int64, subscriptionNote string) (*SubscriptionNote, error)
 	Get(subscriptionId int64, subscriptionNoteId int64, options interface{}) (*SubscriptionNote, error)
 	List(subscriptionId int64, options interface{}) ([]SubscriptionNote, error)
 	Update(subscriptionId int64, subscriptioNnote *SubscriptionNote) (*SubscriptionNote, error)
@@ -102,9 +102,12 @@ func (o *SubscriptionNoteServiceOp) ListWithPagination(subscriptionId int64, opt
 	return resource, pagination, err
 }
 
-func (o *SubscriptionNoteServiceOp) Create(subscriptionId int64, subscriptionNote SubscriptionNote) (*SubscriptionNote, error) {
+func (o *SubscriptionNoteServiceOp) Create(subscriptionId int64, text string) (*SubscriptionNote, error) {
 	basePath := fmt.Sprintf(subscriptionNotesBasePath, subscriptionId)
 	resource := new(SubscriptionNote)
+	subscriptionNote := SubscriptionNote{
+		Note: text,
+	}
 
 	err := o.client.Post(basePath, &subscriptionNote, resource)
 	return resource, err

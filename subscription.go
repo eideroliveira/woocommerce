@@ -2,6 +2,8 @@ package woocommerce
 
 import (
 	"fmt"
+	"strings"
+	"time"
 )
 
 const (
@@ -79,28 +81,28 @@ type Subscription struct {
 	Currency                 string          `json:"currency,omitempty"`
 	Version                  string          `json:"version,omitempty"`
 	PricesIncludeTax         bool            `json:"prices_include_tax,omitempty"`
-	DateCreated              string          `json:"date_created,omitempty"`
+	DateCreated              CustomTime      `json:"date_created,omitempty"`
 	DateCreatedGmt           string          `json:"date_created_gmt,omitempty"`
 	DateModified             string          `json:"date_modified,omitempty"`
-	DateModifiedGmt          string          `json:"date_modified_gmt,omitempty"`
+	DateModifiedGmt          CustomTime      `json:"date_modified_gmt,omitempty"`
 	DateCompleted            string          `json:"date_completed,omitempty"`
-	DateCompletedGmt         string          `json:"date_completed_gmt,omitempty"`
+	DateCompletedGmt         CustomTime      `json:"date_completed_gmt,omitempty"`
 	DatePaid                 string          `json:"date_paid,omitempty"`
-	DatePaidGmt              string          `json:"date_paid_gmt,omitempty"`
-	StartDate                string          `json:"start_date,omitempty"`
-	StartDateGmt             string          `json:"start_date_gmt,omitempty"`
+	DatePaidGmt              CustomTime      `json:"date_paid_gmt,omitempty"`
+	StartDate                CustomTime      `json:"start_date,omitempty"`
+	StartDateGmt             CustomTime      `json:"start_date_gmt,omitempty"`
 	TrialEnd                 string          `json:"trial_end_date,omitempty"`
 	TrialEndGmt              string          `json:"trial_end_date_gmt,omitempty"`
 	NextPaymentDate          string          `json:"next_payment_date,omitempty"`
-	NextPaymentDateGmt       string          `json:"next_payment_date_gmt,omitempty"`
+	NextPaymentDateGmt       CustomTime      `json:"next_payment_date_gmt,omitempty"`
 	LastPaymentDate          string          `json:"last_payment_date,omitempty"`
-	LastPaymentDateGmt       string          `json:"last_payment_date_gmt,omitempty"`
-	PaymentRetryDate         string          `json:"payment_retry_date,omitempty"`
-	PaymentRetryDateGmt      string          `json:"payment_retry_date_gmt,omitempty"`
-	CancelledDate            string          `json:"cancelled_date,omitempty"`
-	CancelledDateGmt         string          `json:"cancelled_date_gmt,omitempty"`
+	LastPaymentDateGmt       CustomTime      `json:"last_payment_date_gmt,omitempty"`
+	PaymentRetryDate         CustomTime      `json:"payment_retry_date,omitempty"`
+	PaymentRetryDateGmt      CustomTime      `json:"payment_retry_date_gmt,omitempty"`
+	CancelledDate            CustomTime      `json:"cancelled_date,omitempty"`
+	CancelledDateGmt         CustomTime      `json:"cancelled_date_gmt,omitempty"`
 	EndDate                  string          `json:"end_date,omitempty"`
-	EndDateGmt               string          `json:"end_date_gmt,omitempty"`
+	EndDateGmt               CustomTime      `json:"end_date_gmt,omitempty"`
 	DiscountsTotal           string          `json:"discount_total,omitempty"`
 	DiscountsTax             string          `json:"discount_tax,omitempty"`
 	ShippingTotal            string          `json:"shipping_total,omitempty"`
@@ -138,6 +140,22 @@ type Subscription struct {
 	NeedsProcessing          bool            `json:"needs_processing,omitempty"`
 	IsEditable               bool            `json:"is_editable,omitempty"`
 	Links                    Links           `json:"_links"`
+}
+
+type CustomTime struct {
+	time.Time
+}
+
+const expiryDateLayout = "2006-01-02T15:04:05"
+
+func (ct *CustomTime) UnmarshalJSON(b []byte) (err error) {
+	s := strings.Trim(string(b), "\"")
+	if s == "null" || s == "" {
+		ct.Time = time.Time{}
+		return
+	}
+	ct.Time, err = time.Parse(expiryDateLayout, s)
+	return
 }
 
 type PaymentDetails struct {
