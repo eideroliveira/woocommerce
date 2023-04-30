@@ -159,7 +159,7 @@ type Billing struct {
 	RG           string    `json:"rg,omitempty"`
 	CNPJ         string    `json:"cnpj,omitempty"`
 	IE           string    `json:"ie,omitempty"`
-	Number       Stringint `json:"number,omitempty"`
+	Number       string    `json:"number,omitempty"`
 	Neighborhood string    `json:"neighborhood,omitempty"`
 	PersonType   string    `json:"persontype,omitempty"`
 	BirthDate    string    `json:"birthdate,omitempty"`
@@ -171,7 +171,6 @@ type Billing struct {
 	PayerEmail   string    `json:"payer_email,omitempty"`
 	PayerPhone   string    `json:"payer_phone,omitempty"`
 	Church       string    `json:"church,omitempty"`
-	Size         Stringint `json:"size,omitempty"`
 }
 
 func (c *Billing) String() string {
