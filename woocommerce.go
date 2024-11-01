@@ -20,8 +20,8 @@ import (
 const (
 	UserAgent            = "woocommerce/1.0.0"
 	defaultHttpTimeout   = 60
-	defaultApiPathPrefix = "/wp-json/wc/v3"
-	defaultVersion       = "v3"
+	defaultApiPathPrefix = "/wp-json/wc/v1"
+	defaultVersion       = "v1"
 )
 
 var (

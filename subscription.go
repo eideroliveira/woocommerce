@@ -158,8 +158,7 @@ func (o *SubscriptionServiceOp) ListWithPagination(options interface{}) ([]Subsc
 		return nil, nil, err
 	}
 	// Extract pagination info from header
-	linkHeader := headers.Get("Link")
-	pagination, err := extractPagination(linkHeader)
+	pagination, err := extractPagination(headers)
 	if err != nil {
 		return nil, nil, err
 	}

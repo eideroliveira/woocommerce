@@ -312,8 +312,7 @@ func (o *OrderServiceOp) ListWithPagination(options interface{}) ([]Order, *Pagi
 		return nil, nil, err
 	}
 	// Extract pagination info from header
-	linkHeader := headers.Get("Link")
-	pagination, err := extractPagination(linkHeader)
+	pagination, err := extractPagination(headers)
 	if err != nil {
 		return nil, nil, err
 	}
