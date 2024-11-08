@@ -31,6 +31,7 @@ var (
 type App struct {
 	CustomerKey    string
 	CustomerSecret string
+	JwtToken			 string
 	AppName        string
 	UserId         string
 	Scope          string
@@ -441,7 +442,11 @@ func (c *Client) NewRequest(method, relPath string, body, options interface{}) (
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("User-Agent", UserAgent)
-	req.SetBasicAuth(c.app.CustomerKey, c.app.CustomerSecret)
+	if c.app.JwtToken != "" {
+		req.Header.Add("Authorization", "Bearer "+c.app.JwtToken)
+	} else {
+		req.SetBasicAuth(c.app.CustomerKey, c.app.CustomerSecret)
+	}
 	return req, nil
 }
 
