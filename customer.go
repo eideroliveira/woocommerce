@@ -14,6 +14,7 @@ type CustomerService interface {
 	Create(customer Customer) (*Customer, error)
 	Get(customerId int64, options interface{}) (*Customer, error)
 	List(options interface{}) ([]Customer, error)
+	ListWithPagination(options interface{}) ([]Customer, *Pagination, error)
 	Update(customer *Customer) (*Customer, error)
 	Delete(customerID int64, options interface{}) (*Customer, error)
 	Batch(option CustomerBatchOption) (*CustomerBatchResource, error)
@@ -68,6 +69,11 @@ type CustomerBatchResource struct {
 	Delete []*Customer `json:"delete,omitempty"`
 }
 
+type CustomerLastOrder struct {
+	ID   int64  `json:"id,omitempty"`
+	Date string `json:"date,omitempty"`
+}
+
 // Customer represents a WooCommerce Customer
 // https://woocommerce.github.io/woocommerce-rest-api-docs/#customer-properties
 type Customer struct {
@@ -78,6 +84,9 @@ type Customer struct {
 	DateCreatedGmt    string                 `json:"date_created_gmt,omitempty"`
 	DateModified      string                 `json:"date_modified,omitempty"`
 	DateModifiedGmt   string                 `json:"date_modified_gmt,omitempty"`
+	LastOrder         CustomerLastOrder      `json:"last_order,omitempty"`
+	OrdersCount       uint64                 `json:"orders_count,omitempty"`
+	TotalSpent        string                 `json:"total_spent,omitempty"`
 	Description       string                 `json:"description,omitempty"`
 	Email             string                 `json:"email,omitempty"`
 	ExtraCapabilities map[string]interface{} `json:"extra_capabilities,omitempty"`

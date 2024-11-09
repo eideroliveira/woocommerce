@@ -143,6 +143,13 @@ type Links struct {
 	} `json:"up"`
 }
 
+type PersonType uint
+
+const (
+	CustomerTypeUnknown PersonType = iota
+	CustomerPessoaFisica
+	CustomerPessoaJuridica
+)
 type Billing struct {
 	FirstName    string    `json:"first_name,omitempty"`
 	LastName     string    `json:"last_name,omitempty"`
@@ -154,6 +161,8 @@ type Billing struct {
 	PostCode     string    `json:"postcode,omitempty"`
 	Country      string    `json:"country,omitempty"`
 	Email        string    `json:"email,omitempty"`
+	BillingEmail        string    `json:"billing_email,omitempty"`
+	BillingCompany        string    `json:"billing_company,omitempty"`
 	Phone        string    `json:"phone,omitempty"`
 	CPF          string    `json:"cpf,omitempty"`
 	RG           string    `json:"rg,omitempty"`
@@ -161,10 +170,10 @@ type Billing struct {
 	IE           string    `json:"ie,omitempty"`
 	Number       string    `json:"number,omitempty"`
 	Neighborhood string    `json:"neighborhood,omitempty"`
-	PersonType   string    `json:"persontype,omitempty"`
+	PersonType   PersonType    `json:"persontype,omitempty"`
 	BirthDate    string    `json:"birthdate,omitempty"`
 	CellPhone    string    `json:"cellphone,omitempty"`
-	Sex          string    `json:"sex,omitempty"`
+	Sex          string    `json:"gender,omitempty"`
 	ChurchEmail  string    `json:"church_email,omitempty"`
 	ChurchSize   Stringint `json:"church_size,omitempty"`
 	PayerName    string    `json:"payer_name,omitempty"`
@@ -220,6 +229,23 @@ type LineItem struct {
 	ParentName  string     `json:"parent_name,omitempty"`
 }
 
+func (p *PersonType) UnmarshalJSON(id []byte) error {
+	s := string(id)
+	if s == "" || s == "\"\"" {
+		*p = CustomerTypeUnknown
+		return nil
+	}
+	switch s {
+	case "F":
+		*p = CustomerPessoaFisica
+	case "J":
+		*p = CustomerPessoaJuridica
+	default:
+		*p = CustomerTypeUnknown
+	}
+	return nil
+}
+
 type Stringint int64
 
 func (i *Stringint) UnmarshalJSON(id []byte) error {
@@ -230,7 +256,10 @@ func (i *Stringint) UnmarshalJSON(id []byte) error {
 	}
 	i_, err := strconv.Atoi(strings.Trim(strings.ReplaceAll(string(id), `"`, ""), " "))
 	*i = Stringint(i_)
-	return err
+	if err != nil {
+		fmt.Printf("error parsing stringint %s: %v, setting to Zero", id, err)
+	}
+	return nil
 }
 
 func (i *Stringint) MarshalJSON() ([]byte, error) {
