@@ -31,7 +31,7 @@ var (
 type App struct {
 	CustomerKey    string
 	CustomerSecret string
-	JwtToken			 string
+	JwtToken       string
 	AppName        string
 	UserId         string
 	Scope          string
@@ -62,6 +62,7 @@ type Client struct {
 	Customer          CustomerService
 	RateLimits        RateLimitInfo
 	Product           ProductService
+	File              FileService
 	Order             OrderService
 	OrderNote         OrderNoteService
 	Webhook           WebhookService
@@ -102,6 +103,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 	c.Product = &ProductServiceOp{client: c}
 	c.Order = &OrderServiceOp{client: c}
 	c.OrderNote = &OrderNoteServiceOp{client: c}
+	c.File = &FileServiceOp{client: c}
 	c.Webhook = &WebhookServiceOp{client: c}
 	c.PaymentGateway = &PaymentGatewayServiceOp{client: c}
 	c.Subscription = &SubscriptionServiceOp{client: c}

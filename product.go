@@ -243,6 +243,7 @@ func (o *ProductServiceOp) Get(productID int64, options interface{}) (*Product, 
 	return resource, err
 }
 
+
 func (o *ProductServiceOp) Update(product *Product) (*Product, error) {
 	path := fmt.Sprintf("%s/%d", productsBasePath, product.ID)
 	resource := new(Product)
