@@ -59,10 +59,10 @@ type Client struct {
 	retries  int
 	attempts int
 
+  File              FileService
 	Customer          CustomerService
 	RateLimits        RateLimitInfo
 	Product           ProductService
-	File              FileService
 	Order             OrderService
 	OrderNote         OrderNoteService
 	Webhook           WebhookService
@@ -329,7 +329,7 @@ func (c *Client) logBody(body *io.ReadCloser, format string) {
 	}
 	b, _ := ioutil.ReadAll(*body)
 	bBuf := bytes.NewBuffer(b)
-	if len(b) > 0 {
+	if len(b) > 0 && len(b) < 512 {
 		buf := bytes.Buffer{}
 		json.Indent(&buf, b, "", " ")
 

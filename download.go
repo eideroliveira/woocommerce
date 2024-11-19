@@ -22,8 +22,8 @@ type FileServiceOp struct {
 
 // File represent a  wooCommerce file's All  properties columns
 type File struct {
-	Name            string   `json:"name,omitempty"`
-	Content 			 []byte   `json:"content,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Content []byte `json:"content,omitempty"`
 }
 
 // Get implement for retrieve and view a specific file
@@ -34,4 +34,3 @@ func (w *FileServiceOp) Get(file string) (*File, error) {
 	err := w.client.Get(path, &resource, nil)
 	return resource, err
 }
-
