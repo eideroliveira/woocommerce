@@ -22,7 +22,7 @@ type FileServiceOp struct {
 
 // File represent a  wooCommerce file's All  properties columns
 type File struct {
-	Name    string `json:"name,omitempty"`
+	Name    string `json:"filename,omitempty"`
 	Content []byte `json:"content,omitempty"`
 }
 
