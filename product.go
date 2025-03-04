@@ -1,6 +1,7 @@
 package woocommerce
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -48,7 +49,7 @@ type Product struct {
 	PriceHTML         string             `json:"price_html"`
 	OnSale            bool               `json:"on_sale"`
 	Purchasable       bool               `json:"purchasable"`
-	TotalSales        int                `json:"total_sales"`
+	TotalSales        StringFloat                `json:"total_sales"`
 	Virtual           bool               `json:"virtual"`
 	Visible           bool               `json:"visible"`
 	Downloadable      bool               `json:"downloadable"`
@@ -94,11 +95,12 @@ type Product struct {
 	Links             Links              `json:"_links"`
 }
 
+
 type StringTime time.Time
 
 func (i *StringTime) UnmarshalJSON(t []byte) error {
 	s := strings.Trim(string(t), "\"")
-	if len(s) == 0 {
+	if len(s) == 0 || s == "null" {
 		return nil
 	}
 
@@ -116,6 +118,23 @@ func (i *StringTime) UnmarshalJSON(t []byte) error {
 func (i *StringTime) MarshalJSON() ([]byte, error) {
 	t := time.Time(*i)
 	return t.MarshalJSON()
+}
+
+type StringFloat float32
+
+func (i *StringFloat) UnmarshalJSON(t []byte) error {
+	s := strings.Trim(string(t), "\"")
+	if len(s) == 0 || s == "null" {
+		return nil
+	}
+
+	f, err := strconv.ParseFloat(s, 32)
+	*i = StringFloat(f)
+	return err
+}
+
+func (i *StringFloat) MarshalJSON() ([]byte, error) {
+	return json.Marshal(float32(*i))
 }
 
 type Dimensions struct {
