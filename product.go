@@ -120,6 +120,10 @@ func (i *StringTime) MarshalJSON() ([]byte, error) {
 	return t.MarshalJSON()
 }
 
+func (i *StringTime) Time() time.Time {
+	return time.Time(*i)
+	}
+
 type StringFloat float32
 
 func (i *StringFloat) UnmarshalJSON(t []byte) error {
