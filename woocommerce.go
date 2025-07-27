@@ -329,7 +329,7 @@ func (c *Client) logBody(body *io.ReadCloser, format string) {
 	}
 	b, _ := ioutil.ReadAll(*body)
 	bBuf := bytes.NewBuffer(b)
-	if len(b) > 0 && len(b) < 512 {
+	if len(b) > 0 {//&& len(b) < 512 {
 		buf := bytes.Buffer{}
 		json.Indent(&buf, b, "", " ")
 

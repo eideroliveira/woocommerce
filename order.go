@@ -110,7 +110,7 @@ type Order struct {
 	DateCompleted      string          `json:"date_completed,omitempty"`
 	DateCompletedGmt   string          `json:"date_completed_gmt,omitempty"`
 	CartHash           string          `json:"cart_hash,omitempty"`
-	MetaData           []MetaData      `json:"meta_data,omitempty"`
+	MetaData           []MetaData      `json:"meta,omitempty"`
 	LineItems          []LineItem      `json:"line_items,omitempty"`
 	TaxLines           []TaxLine       `json:"tax_lines,omitempty"`
 	ShippingLines      []ShippingLines `json:"shipping_lines,omitempty"`
@@ -150,36 +150,37 @@ const (
 	CustomerPessoaFisica
 	CustomerPessoaJuridica
 )
+
 type Billing struct {
-	FirstName    string    `json:"first_name,omitempty"`
-	LastName     string    `json:"last_name,omitempty"`
-	Company      string    `json:"company,omitempty"`
-	Address1     string    `json:"address_1,omitempty"`
-	Address2     string    `json:"address_2,omitempty"`
-	City         string    `json:"city,omitempty"`
-	State        string    `json:"state,omitempty"`
-	PostCode     string    `json:"postcode,omitempty"`
-	Country      string    `json:"country,omitempty"`
-	Email        string    `json:"email,omitempty"`
-	BillingEmail        string    `json:"billing_email,omitempty"`
-	BillingCompany        string    `json:"billing_company,omitempty"`
-	Phone        string    `json:"phone,omitempty"`
-	CPF          string    `json:"cpf,omitempty"`
-	RG           string    `json:"rg,omitempty"`
-	CNPJ         string    `json:"cnpj,omitempty"`
-	IE           string    `json:"ie,omitempty"`
-	Number       string    `json:"number,omitempty"`
-	Neighborhood string    `json:"neighborhood,omitempty"`
-	PersonType   PersonType    `json:"persontype,omitempty"`
-	BirthDate    string    `json:"birthdate,omitempty"`
-	CellPhone    string    `json:"cellphone,omitempty"`
-	Sex          string    `json:"gender,omitempty"`
-	ChurchEmail  string    `json:"church_email,omitempty"`
-	ChurchSize   Stringint `json:"church_size,omitempty"`
-	PayerName    string    `json:"payer_name,omitempty"`
-	PayerEmail   string    `json:"payer_email,omitempty"`
-	PayerPhone   string    `json:"payer_phone,omitempty"`
-	Church       string    `json:"church,omitempty"`
+	FirstName      string     `json:"first_name,omitempty"`
+	LastName       string     `json:"last_name,omitempty"`
+	Company        string     `json:"company,omitempty"`
+	Address1       string     `json:"address_1,omitempty"`
+	Address2       string     `json:"address_2,omitempty"`
+	City           string     `json:"city,omitempty"`
+	State          string     `json:"state,omitempty"`
+	PostCode       string     `json:"postcode,omitempty"`
+	Country        string     `json:"country,omitempty"`
+	Email          string     `json:"email,omitempty"`
+	BillingEmail   string     `json:"billing_email,omitempty"`
+	BillingCompany string     `json:"billing_company,omitempty"`
+	Phone          string     `json:"phone,omitempty"`
+	CPF            string     `json:"cpf,omitempty"`
+	RG             string     `json:"rg,omitempty"`
+	CNPJ           string     `json:"cnpj,omitempty"`
+	IE             string     `json:"ie,omitempty"`
+	Number         string     `json:"number,omitempty"`
+	Neighborhood   string     `json:"neighborhood,omitempty"`
+	PersonType     PersonType `json:"persontype,omitempty"`
+	BirthDate      string     `json:"birthdate,omitempty"`
+	CellPhone      string     `json:"cellphone,omitempty"`
+	Sex            string     `json:"gender,omitempty"`
+	ChurchEmail    string     `json:"church_email,omitempty"`
+	ChurchSize     Stringint  `json:"church_size,omitempty"`
+	PayerName      string     `json:"payer_name,omitempty"`
+	PayerEmail     string     `json:"payer_email,omitempty"`
+	PayerPhone     string     `json:"payer_phone,omitempty"`
+	Church         string     `json:"church,omitempty"`
 }
 
 func (c *Billing) String() string {
@@ -211,22 +212,22 @@ type Shipping struct {
 }
 
 type LineItem struct {
-	ID          int64      `json:"id,omitempty"`
-	Name        string     `json:"name,omitempty"`
-	ProductID   int64      `json:"product_id,omitempty"`
-	VariantID   int64      `json:"variation_id,omitempty"`
-	Quantity    int        `json:"quantity,omitempty"`
-	TaxClass    string     `json:"tax_class,omitempty"`
-	SubTotal    string     `json:"subtotal,omitempty"`
-	SubtotalTax string     `json:"subtotal_tax,omitempty"`
-	Total       string     `json:"total,omitempty"`
-	TotalTax    string     `json:"total_tax,omitempty"`
-	Taxes       []TaxLine  `json:"taxes,omitempty"`
-	MetaData    []MetaData `json:"meta_data,omitempty"`
-	SKU         string     `json:"sku,omitempty"`
-	Price       float64    `json:"price,omitempty"`
-	Image       Image      `json:"image,omitempty"`
-	ParentName  string     `json:"parent_name,omitempty"`
+	ID          int64       `json:"id,omitempty"`
+	Name        string      `json:"name,omitempty"`
+	ProductID   int64       `json:"product_id,omitempty"`
+	VariantID   int64       `json:"variation_id,omitempty"`
+	Quantity    int         `json:"quantity,omitempty"`
+	TaxClass    string      `json:"tax_class,omitempty"`
+	SubTotal    string      `json:"subtotal,omitempty"`
+	SubtotalTax string      `json:"subtotal_tax,omitempty"`
+	Total       string      `json:"total,omitempty"`
+	TotalTax    string      `json:"total_tax,omitempty"`
+	Taxes       []TaxLine   `json:"taxes,omitempty"`
+	MetaData    []MetaData  `json:"meta,omitempty"`
+	SKU         string      `json:"sku,omitempty"`
+	Price       StringFloat `json:"price,omitempty"`
+	Image       Image       `json:"image,omitempty"`
+	ParentName  string      `json:"parent_name,omitempty"`
 }
 
 func (p *PersonType) UnmarshalJSON(id []byte) error {
@@ -279,13 +280,14 @@ type TaxLine struct {
 	Compound         bool       `json:"compound,omitempty"`
 	TaxTotal         string     `json:"tax_total"`
 	ShippingTaxTotal string     `json:"shipping_tax_total,omitempty"`
-	MetaData         []MetaData `json:"meta_data,omitempty"`
+	MetaData         []MetaData `json:"meta,omitempty"`
 }
 
 type MetaData struct {
 	ID           int64       `json:"id,omitempty"`
 	Key          string      `json:"key,omitempty"`
 	Value        interface{} `json:"value,omitempty"`
+	Label        string      `json:"label,omitempty"`
 	DisplayKey   string      `json:"display_key,omitempty"`
 	DisplayValue interface{} `json:"display_value,omitempty"`
 }
@@ -299,7 +301,7 @@ type FeeLine struct {
 	Total     string     `json:"total,omitempty"`
 	TotalTax  string     `json:"total_tax,omitempty"`
 	Taxes     []TaxLine  `json:"taxes,omitempty"`
-	MetaData  []MetaData `json:"meta_data,omitempty"`
+	MetaData  []MetaData `json:"meta,omitempty"`
 }
 
 type Refund struct {
@@ -314,8 +316,8 @@ type ShippingLines struct {
 	MethodID    string     `json:"method_id,omitempty"`
 	Total       string     `json:"total,omitempty"`
 	TotalTax    string     `json:"total_tax,omitempty"`
-	Taxes       []TaxLine  `json:"tax_lines,omitempty"`
-	MetaData    []MetaData `json:"meta_data,omitempty"`
+	Taxes       []TaxLine  `json:"taxes,omitempty"`
+	MetaData    []MetaData `json:"meta,omitempty"`
 }
 
 type CouponLine struct {
@@ -323,7 +325,7 @@ type CouponLine struct {
 	Code        string     `json:"code,omitempty"`
 	Discount    string     `json:"discount,omitempty"`
 	DiscountTax string     `json:"discount_tax,omitempty"`
-	MetaData    []MetaData `json:"meta_data,omitempty"`
+	MetaData    []MetaData `json:"meta,omitempty"`
 }
 
 func (o *OrderServiceOp) List(options interface{}) ([]Order, error) {

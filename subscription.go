@@ -119,7 +119,7 @@ type Subscription struct {
 	CreatedVia               string          `json:"created_via,omitempty"`
 	CustomerNote             string          `json:"customer_note,omitempty"`
 	Number                   string          `json:"number,omitempty"`
-	MetaData                 []MetaData      `json:"meta_data,omitempty"`
+	MetaData                 []MetaData      `json:"meta,omitempty"`
 	LineItems                []LineItem      `json:"line_items,omitempty"`
 	TaxLines                 []TaxLine       `json:"tax_lines,omitempty"`
 	ShippingLines            []ShippingLines `json:"shipping_lines,omitempty"`

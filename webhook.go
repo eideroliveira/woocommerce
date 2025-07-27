@@ -10,7 +10,7 @@ const (
 
 // WebhookService is an interface for interfacing with the webhook endpoints of
 // the WooCommerce webhooks restful API
-// https://woocommerce.github.io/woocommerce-rest-api-docs/#webhooks
+// https://woocommerce.github.io/woocommerce-rest-api-docs/#webhooks∑
 type WebhookService interface {
 	List(options interface{}) ([]Webhook, error)
 	Create(webhook Webhook) (*Webhook, error)

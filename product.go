@@ -90,7 +90,7 @@ type Product struct {
 	Variations        []Product          `json:"variations"`
 	GroupedProducts   []int              `json:"grouped_products"`
 	MenuOrder         int                `json:"menu_order"`
-	MetaData          []MetaDatum        `json:"meta_data"`
+	MetaData          []MetaDatum        `json:"meta"`
 	DownloadType      string             `json:"download_type"`
 	Links             Links              `json:"_links"`
 }
