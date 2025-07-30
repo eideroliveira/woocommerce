@@ -93,8 +93,8 @@ type Order struct {
 	ShippingTotal      string          `json:"shipping_total,omitempty"`
 	ShippingTax        string          `json:"shipping_tax,omitempty"`
 	CartTax            string          `json:"cart_tax,omitempty"`
-	Total              string          `json:"total,omitempty"`
-	TotalTax           string          `json:"total_tax,omitempty"`
+	Total              StringFloat          `json:"total,omitempty"`
+	TotalTax           StringFloat          `json:"total_tax,omitempty"`
 	PricesIncludeTax   bool            `json:"prices_include_tax,omitempty"`
 	CustomerId         int64           `json:"customer_id,omitempty"`
 	CustomerIpAddress  string          `json:"customer_ip_address,omitempty"`
@@ -105,10 +105,10 @@ type Order struct {
 	PaymentMethod      string          `json:"payment_method,omitempty"`
 	PaymentMethodTitle string          `json:"payment_method_title,omitempty"`
 	TransactionId      string          `json:"transaction_id,omitempty"`
-	DatePaid           string          `json:"date_paid,omitempty"`
-	DatePaidGmt        string          `json:"date_paid_gmt,omitempty"`
-	DateCompleted      string          `json:"date_completed,omitempty"`
-	DateCompletedGmt   string          `json:"date_completed_gmt,omitempty"`
+	DatePaid           StringTime      `json:"date_paid,omitempty"`
+	DatePaidGmt        StringTime      `json:"date_paid_gmt,omitempty"`
+	DateCompleted      StringTime      `json:"date_completed,omitempty"`
+	DateCompletedGmt   StringTime      `json:"date_completed_gmt,omitempty"`
 	CartHash           string          `json:"cart_hash,omitempty"`
 	MetaData           []MetaData      `json:"meta,omitempty"`
 	LineItems          []LineItem      `json:"line_items,omitempty"`
