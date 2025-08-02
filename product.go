@@ -141,6 +141,19 @@ func (i *StringFloat) MarshalJSON() ([]byte, error) {
 	return json.Marshal(float32(*i))
 }
 
+func (i *StringFloat) Float32() float32 {
+	return float32(*i)
+}
+
+func (i *StringFloat) Float64() float64 {
+	return float64(*i)
+}
+
+func ParseStringFloat(s string) StringFloat {
+	f, _ := strconv.ParseFloat(s, 32)
+	return StringFloat(f)
+}
+
 type Dimensions struct {
 	Length string `json:"length"`
 	Width  string `json:"width"`

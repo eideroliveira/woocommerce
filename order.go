@@ -20,6 +20,7 @@ type OrderService interface {
 	Update(order *Order) (*Order, error)
 	Delete(orderID int64, options interface{}) (*Order, error)
 	Batch(option OrderBatchOption) (*OrderBatchResource, error)
+	ListWithPagination(options interface{}) ([]Order, *Pagination, error)
 }
 
 // OrderServiceOp handles communication with the order related methods of WooCommerce'API

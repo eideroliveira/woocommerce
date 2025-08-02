@@ -129,8 +129,8 @@ func TestOrderServiceOp_Batch(t *testing.T) {
 		Update: []Order{
 			{
 				ID:       17,
-				TotalTax: "20.00",
-				Total:    "120",
+				TotalTax: ParseStringFloat("20.00"),
+				Total:    ParseStringFloat("120"),
 			},
 		},
 		Delete: []int64{

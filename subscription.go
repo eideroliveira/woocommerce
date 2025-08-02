@@ -17,6 +17,7 @@ type SubscriptionService interface {
 	Update(subscription *Subscription) (*Subscription, error)
 	Delete(subscriptionID int64, options interface{}) (*Subscription, error)
 	Batch(option SubscriptionBatchOption) (*SubscriptionBatchResource, error)
+	ListWithPagination(options interface{}) ([]Subscription, *Pagination, error)
 }
 
 // SubscriptionServiceOp handles communication with the subscription related methods of WooCommerce'API
@@ -79,35 +80,35 @@ type Subscription struct {
 	Currency                 string          `json:"currency,omitempty"`
 	Version                  string          `json:"version,omitempty"`
 	PricesIncludeTax         bool            `json:"prices_include_tax,omitempty"`
-	DateCreated              string          `json:"date_created,omitempty"`
-	DateCreatedGmt           string          `json:"date_created_gmt,omitempty"`
-	DateModified             string          `json:"date_modified,omitempty"`
-	DateModifiedGmt          string          `json:"date_modified_gmt,omitempty"`
-	DateCompleted            string          `json:"date_completed,omitempty"`
-	DateCompletedGmt         string          `json:"date_completed_gmt,omitempty"`
-	DatePaid                 string          `json:"date_paid,omitempty"`
-	DatePaidGmt              string          `json:"date_paid_gmt,omitempty"`
-	StartDate                string          `json:"start_date,omitempty"`
-	StartDateGmt             string          `json:"start_date_gmt,omitempty"`
-	TrialEnd                 string          `json:"trial_end_date,omitempty"`
-	TrialEndGmt              string          `json:"trial_end_date_gmt,omitempty"`
-	NextPaymentDate          string          `json:"next_payment_date,omitempty"`
-	NextPaymentDateGmt       string          `json:"next_payment_date_gmt,omitempty"`
-	LastPaymentDate          string          `json:"last_payment_date,omitempty"`
-	LastPaymentDateGmt       string          `json:"last_payment_date_gmt,omitempty"`
-	PaymentRetryDate         string          `json:"payment_retry_date,omitempty"`
-	PaymentRetryDateGmt      string          `json:"payment_retry_date_gmt,omitempty"`
-	CancelledDate            string          `json:"cancelled_date,omitempty"`
-	CancelledDateGmt         string          `json:"cancelled_date_gmt,omitempty"`
-	EndDate                  string          `json:"end_date,omitempty"`
-	EndDateGmt               string          `json:"end_date_gmt,omitempty"`
-	DiscountsTotal           string          `json:"discount_total,omitempty"`
-	DiscountsTax             string          `json:"discount_tax,omitempty"`
-	ShippingTotal            string          `json:"shipping_total,omitempty"`
-	ShippingTax              string          `json:"shipping_tax,omitempty"`
-	CartTax                  string          `json:"cart_tax,omitempty"`
-	Total                    string          `json:"total,omitempty"`
-	TotalTax                 string          `json:"total_tax,omitempty"`
+	DateCreated              StringTime          `json:"date_created,omitempty"`
+	DateCreatedGmt           StringTime          `json:"date_created_gmt,omitempty"`
+	DateModified             StringTime          `json:"date_modified,omitempty"`
+	DateModifiedGmt          StringTime          `json:"date_modified_gmt,omitempty"`
+	DateCompleted            StringTime          `json:"date_completed,omitempty"`
+	DateCompletedGmt         StringTime          `json:"date_completed_gmt,omitempty"`
+	DatePaid                 StringTime          `json:"date_paid,omitempty"`
+	DatePaidGmt              StringTime          `json:"date_paid_gmt,omitempty"`
+	StartDate                StringTime          `json:"start_date,omitempty"`
+	StartDateGmt             StringTime          `json:"start_date_gmt,omitempty"`
+	TrialEnd                 StringTime          `json:"trial_end_date,omitempty"`
+	TrialEndGmt              StringTime          `json:"trial_end_date_gmt,omitempty"`
+	NextPaymentDate          StringTime          `json:"next_payment_date,omitempty"`
+	NextPaymentDateGmt       StringTime          `json:"next_payment_date_gmt,omitempty"`
+	LastPaymentDate          StringTime          `json:"last_payment_date,omitempty"`
+	LastPaymentDateGmt       StringTime          `json:"last_payment_date_gmt,omitempty"`
+	PaymentRetryDate         StringTime          `json:"payment_retry_date,omitempty"`
+	PaymentRetryDateGmt      StringTime          `json:"payment_retry_date_gmt,omitempty"`
+	CancelledDate            StringTime          `json:"cancelled_date,omitempty"`
+	CancelledDateGmt         StringTime          `json:"cancelled_date_gmt,omitempty"`
+	EndDate                  StringTime          `json:"end_date,omitempty"`
+	EndDateGmt               StringTime          `json:"end_date_gmt,omitempty"`
+	DiscountsTotal           StringFloat          `json:"discount_total,omitempty"`
+	DiscountsTax             StringFloat          `json:"discount_tax,omitempty"`
+	ShippingTotal            StringFloat          `json:"shipping_total,omitempty"`
+	ShippingTax              StringFloat          `json:"shipping_tax,omitempty"`
+	CartTax                  StringFloat          `json:"cart_tax,omitempty"`
+	Total                    StringFloat          `json:"total,omitempty"`
+	TotalTax                 StringFloat          `json:"total_tax,omitempty"`
 	CustomerId               int64           `json:"customer_id,omitempty"`
 	OrderKey                 string          `json:"order_key,omitempty"`
 	Billing                  *Billing        `json:"billing,omitempty"`
