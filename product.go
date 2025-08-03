@@ -28,7 +28,7 @@ type ProductService interface {
 // Product represent WooCommerce Product
 // https://woocommerce.github.io/woocommerce-rest-api-docs/#product-properties
 type Product struct {
-	ID                int                `json:"id"`
+	ID                int64              `json:"id"`
 	Name              string             `json:"name"`
 	Slug              string             `json:"slug"`
 	Permalink         string             `json:"permalink"`
