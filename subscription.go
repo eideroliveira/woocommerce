@@ -80,35 +80,35 @@ type Subscription struct {
 	Currency                 string          `json:"currency,omitempty"`
 	Version                  string          `json:"version,omitempty"`
 	PricesIncludeTax         bool            `json:"prices_include_tax,omitempty"`
-	DateCreated              StringTime          `json:"date_created,omitempty"`
-	DateCreatedGmt           StringTime          `json:"date_created_gmt,omitempty"`
-	DateModified             StringTime          `json:"date_modified,omitempty"`
-	DateModifiedGmt          StringTime          `json:"date_modified_gmt,omitempty"`
-	DateCompleted            StringTime          `json:"date_completed,omitempty"`
-	DateCompletedGmt         StringTime          `json:"date_completed_gmt,omitempty"`
-	DatePaid                 StringTime          `json:"date_paid,omitempty"`
-	DatePaidGmt              StringTime          `json:"date_paid_gmt,omitempty"`
-	StartDate                StringTime          `json:"start_date,omitempty"`
-	StartDateGmt             StringTime          `json:"start_date_gmt,omitempty"`
-	TrialEnd                 StringTime          `json:"trial_end_date,omitempty"`
-	TrialEndGmt              StringTime          `json:"trial_end_date_gmt,omitempty"`
-	NextPaymentDate          StringTime          `json:"next_payment_date,omitempty"`
-	NextPaymentDateGmt       StringTime          `json:"next_payment_date_gmt,omitempty"`
-	LastPaymentDate          StringTime          `json:"last_payment_date,omitempty"`
-	LastPaymentDateGmt       StringTime          `json:"last_payment_date_gmt,omitempty"`
-	PaymentRetryDate         StringTime          `json:"payment_retry_date,omitempty"`
-	PaymentRetryDateGmt      StringTime          `json:"payment_retry_date_gmt,omitempty"`
-	CancelledDate            StringTime          `json:"cancelled_date,omitempty"`
-	CancelledDateGmt         StringTime          `json:"cancelled_date_gmt,omitempty"`
-	EndDate                  StringTime          `json:"end_date,omitempty"`
-	EndDateGmt               StringTime          `json:"end_date_gmt,omitempty"`
-	DiscountsTotal           StringFloat          `json:"discount_total,omitempty"`
-	DiscountsTax             StringFloat          `json:"discount_tax,omitempty"`
-	ShippingTotal            StringFloat          `json:"shipping_total,omitempty"`
-	ShippingTax              StringFloat          `json:"shipping_tax,omitempty"`
-	CartTax                  StringFloat          `json:"cart_tax,omitempty"`
-	Total                    StringFloat          `json:"total,omitempty"`
-	TotalTax                 StringFloat          `json:"total_tax,omitempty"`
+	DateCreated              StringTime      `json:"date_created,omitempty"`
+	DateCreatedGmt           StringTime      `json:"date_created_gmt,omitempty"`
+	DateModified             StringTime      `json:"date_modified,omitempty"`
+	DateModifiedGmt          StringTime      `json:"date_modified_gmt,omitempty"`
+	DateCompleted            StringTime      `json:"date_completed,omitempty"`
+	DateCompletedGmt         StringTime      `json:"date_completed_gmt,omitempty"`
+	DatePaid                 StringTime      `json:"date_paid,omitempty"`
+	DatePaidGmt              StringTime      `json:"date_paid_gmt,omitempty"`
+	StartDate                StringTime      `json:"start_date,omitempty"`
+	StartDateGmt             StringTime      `json:"start_date_gmt,omitempty"`
+	TrialEnd                 StringTime      `json:"trial_end_date,omitempty"`
+	TrialEndGmt              StringTime      `json:"trial_end_date_gmt,omitempty"`
+	NextPaymentDate          StringTime      `json:"next_payment_date,omitempty"`
+	NextPaymentDateGmt       StringTime      `json:"next_payment_date_gmt,omitempty"`
+	LastPaymentDate          StringTime      `json:"last_payment_date,omitempty"`
+	LastPaymentDateGmt       StringTime      `json:"last_payment_date_gmt,omitempty"`
+	PaymentRetryDate         StringTime      `json:"payment_retry_date,omitempty"`
+	PaymentRetryDateGmt      StringTime      `json:"payment_retry_date_gmt,omitempty"`
+	CancelledDate            StringTime      `json:"cancelled_date,omitempty"`
+	CancelledDateGmt         StringTime      `json:"cancelled_date_gmt,omitempty"`
+	EndDate                  StringTime      `json:"end_date,omitempty"`
+	EndDateGmt               StringTime      `json:"end_date_gmt,omitempty"`
+	DiscountsTotal           StringFloat     `json:"discount_total,omitempty"`
+	DiscountsTax             StringFloat     `json:"discount_tax,omitempty"`
+	ShippingTotal            StringFloat     `json:"shipping_total,omitempty"`
+	ShippingTax              StringFloat     `json:"shipping_tax,omitempty"`
+	CartTax                  StringFloat     `json:"cart_tax,omitempty"`
+	Total                    StringFloat     `json:"total,omitempty"`
+	TotalTax                 StringFloat     `json:"total_tax,omitempty"`
 	CustomerId               int64           `json:"customer_id,omitempty"`
 	OrderKey                 string          `json:"order_key,omitempty"`
 	Billing                  *Billing        `json:"billing,omitempty"`
@@ -139,6 +139,9 @@ type Subscription struct {
 	NeedsProcessing          bool            `json:"needs_processing,omitempty"`
 	IsEditable               bool            `json:"is_editable,omitempty"`
 	Links                    Links           `json:"_links"`
+	TransactionId            string          `json:"transaction_id,omitempty"`
+	CartHash                 string          `json:"cart_hash,omitempty"`
+	Refunds                  []Refund       `json:"refunds,omitempty"`
 }
 
 type PaymentDetails struct {
