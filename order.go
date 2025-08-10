@@ -172,7 +172,7 @@ type PaypalData struct {
 	PaidDate       StringTime `json:"paid_date,omitempty"`
 	CompletedDate  StringTime `json:"completed_date,omitempty"`
 	SubscriptionID StringInt  `json:"subscription_id,omitempty"`
-	Status         string     `json:"status,omitempty"`
+	Status         string     `json:"paypal_status,omitempty"`
 	IPNTrackingIDs []string   `json:"ipn_tracking_ids,omitempty"`
 }
 
