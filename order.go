@@ -129,7 +129,7 @@ type Order struct {
 	OrderType          string            `json:"order_type,omitempty"`
 	Paghiper           *WC_Paghiper_Data `json:"wc_paghiper_data,omitempty"`
 	NFE                []NFE             `json:"nfe,omitempty"`
-	Paypal             PaypalData        `json:"paypal_data,omitempty"` // PayPal specific data
+	Paypal             *PaypalData        `json:"paypal,omitempty"` 
 }
 
 type WC_Paghiper_Data struct {
@@ -171,7 +171,7 @@ type PaypalData struct {
 	TransactionID  string     `json:"transaction_id,omitempty"`
 	PaidDate       StringTime `json:"paid_date,omitempty"`
 	CompletedDate  StringTime `json:"completed_date,omitempty"`
-	SubscriptionID string     `json:"subscription_id,omitempty"`
+	SubscriptionID StringInt  `json:"subscription_id,omitempty"`
 	Status         string     `json:"status,omitempty"`
 	IPNTrackingIDs []string   `json:"ipn_tracking_ids,omitempty"`
 }
