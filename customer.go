@@ -80,13 +80,13 @@ type Customer struct {
   ID                int64                  `json:"id,omitempty"`
   AvatarURL         string                 `json:"avatar_url,omitempty"`
   Capabilities      map[string]interface{} `json:"capabilities,omitempty"`
-  DateCreated       string                 `json:"date_created,omitempty"`
-  DateCreatedGmt    string                 `json:"date_created_gmt,omitempty"`
-  DateModified      string                 `json:"date_modified,omitempty"`
-  DateModifiedGmt   string                 `json:"date_modified_gmt,omitempty"`
+  DateCreated       StringTime             `json:"date_created,omitempty"`
+  DateCreatedGmt    StringTime             `json:"date_created_gmt,omitempty"`
+  DateModified      StringTime             `json:"date_modified,omitempty"`
+  DateModifiedGmt   StringTime             `json:"date_modified_gmt,omitempty"`
   LastOrder         CustomerLastOrder      `json:"last_order,omitempty"`
   OrdersCount       uint64                 `json:"orders_count,omitempty"`
-  TotalSpent        string                 `json:"total_spent,omitempty"`
+  TotalSpent        *StringFloat           `json:"total_spent,omitempty"`
   Description       string                 `json:"description,omitempty"`
   Email             string                 `json:"email,omitempty"`
   ExtraCapabilities map[string]interface{} `json:"extra_capabilities,omitempty"`

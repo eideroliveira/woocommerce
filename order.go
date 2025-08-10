@@ -77,56 +77,103 @@ type OrderBatchResource struct {
 // Order represents a WooCommerce Order
 // https://woocommerce.github.io/woocommerce-rest-api-docs/#order-properties
 type Order struct {
-	ID                 int64           `json:"id,omitempty"`
-	ParentId           int64           `json:"parent_id,omitempty"`
-	Number             string          `json:"number,omitempty"`
-	OrderKey           string          `json:"order_key,omitempty"`
-	CreatedVia         string          `json:"created_via,omitempty"`
-	Version            string          `json:"version,omitempty"`
-	Status             string          `json:"status,omitempty"`
-	Currency           string          `json:"currency,omitempty"`
-	DateCreated        string          `json:"date_created,omitempty"`
-	DateCreatedGmt     string          `json:"date_created_gmt,omitempty"`
-	DateModified       string          `json:"date_modified,omitempty"`
-	DateModifiedGmt    string          `json:"date_modified_gmt,omitempty"`
-	DiscountsTotal     string          `json:"discount_total,omitempty"`
-	DiscountsTax       string          `json:"discount_tax,omitempty"`
-	ShippingTotal      string          `json:"shipping_total,omitempty"`
-	ShippingTax        string          `json:"shipping_tax,omitempty"`
-	CartTax            string          `json:"cart_tax,omitempty"`
-	Total              StringFloat          `json:"total,omitempty"`
-	TotalTax           StringFloat          `json:"total_tax,omitempty"`
-	PricesIncludeTax   bool            `json:"prices_include_tax,omitempty"`
-	CustomerId         int64           `json:"customer_id,omitempty"`
-	CustomerIpAddress  string          `json:"customer_ip_address,omitempty"`
-	CustomerUserAgent  string          `json:"customer_user_agent,omitempty"`
-	CustomerNote       string          `json:"customer_note,omitempty"`
-	Billing            *Billing        `json:"billing,omitempty"`
-	Shipping           *Shipping       `json:"shipping,omitempty"`
-	PaymentMethod      string          `json:"payment_method,omitempty"`
-	PaymentMethodTitle string          `json:"payment_method_title,omitempty"`
-	TransactionId      string          `json:"transaction_id,omitempty"`
-	DatePaid           StringTime      `json:"date_paid,omitempty"`
-	DatePaidGmt        StringTime      `json:"date_paid_gmt,omitempty"`
-	DateCompleted      StringTime      `json:"date_completed,omitempty"`
-	DateCompletedGmt   StringTime      `json:"date_completed_gmt,omitempty"`
-	CartHash           string          `json:"cart_hash,omitempty"`
-	MetaData           []MetaData      `json:"meta,omitempty"`
-	LineItems          []LineItem      `json:"line_items,omitempty"`
-	TaxLines           []TaxLine       `json:"tax_lines,omitempty"`
-	ShippingLines      []ShippingLines `json:"shipping_lines,omitempty"`
-	FeeLines           []FeeLine       `json:"fee_lines,omitempty"`
-	CouponLines        []CouponLine    `json:"coupon_lines,omitempty"`
-	Refunds            []Refund        `json:"refunds,omitempty"`
-	PaymentUrl         string          `json:"payment_url,omitempty"`
-	CurrencySymbol     string          `json:"currency_symbol,omitempty"`
-	Links              Links           `json:"_links"`
-	SetPaid            bool            `json:"set_paid,omitempty"`
-	IsEditable         bool            `json:"is_editable,omitempty"`
-	NeedsPayment       bool            `json:"needs_payment,omitempty"`
-	NeedsProcessing    bool            `json:"needs_processing,omitempty"`
-	TrackingCode       string          `json:"correios_tracking_code,omitempty"`
-	OrderType          string          `json:"order_type,omitempty"`
+	ID                 int64             `json:"id,omitempty"`
+	ParentId           int64             `json:"parent_id,omitempty"`
+	Number             string            `json:"number,omitempty"`
+	OrderKey           string            `json:"order_key,omitempty"`
+	CreatedVia         string            `json:"created_via,omitempty"`
+	Version            string            `json:"version,omitempty"`
+	Status             string            `json:"status,omitempty"`
+	Currency           string            `json:"currency,omitempty"`
+	DateCreated        StringTime        `json:"date_created,omitempty"`
+	DateCreatedGmt     StringTime        `json:"date_created_gmt,omitempty"`
+	DateModified       StringTime        `json:"date_modified,omitempty"`
+	DateModifiedGmt    StringTime        `json:"date_modified_gmt,omitempty"`
+	DiscountsTotal     StringFloat       `json:"discount_total,omitempty"`
+	DiscountsTax       StringFloat       `json:"discount_tax,omitempty"`
+	ShippingTotal      StringFloat       `json:"shipping_total,omitempty"`
+	ShippingTax        StringFloat       `json:"shipping_tax,omitempty"`
+	CartTax            StringFloat       `json:"cart_tax,omitempty"`
+	Total              StringFloat       `json:"total,omitempty"`
+	TotalTax           StringFloat       `json:"total_tax,omitempty"`
+	PricesIncludeTax   bool              `json:"prices_include_tax,omitempty"`
+	CustomerId         int64             `json:"customer_id,omitempty"`
+	CustomerIpAddress  string            `json:"customer_ip_address,omitempty"`
+	CustomerUserAgent  string            `json:"customer_user_agent,omitempty"`
+	CustomerNote       string            `json:"customer_note,omitempty"`
+	Billing            *Billing          `json:"billing,omitempty"`
+	Shipping           *Shipping         `json:"shipping,omitempty"`
+	PaymentMethod      string            `json:"payment_method,omitempty"`
+	PaymentMethodTitle string            `json:"payment_method_title,omitempty"`
+	TransactionId      string            `json:"transaction_id,omitempty"`
+	DatePaid           StringTime        `json:"date_paid,omitempty"`
+	DatePaidGmt        StringTime        `json:"date_paid_gmt,omitempty"`
+	DateCompleted      StringTime        `json:"date_completed,omitempty"`
+	DateCompletedGmt   StringTime        `json:"date_completed_gmt,omitempty"`
+	CartHash           string            `json:"cart_hash,omitempty"`
+	MetaData           []MetaData        `json:"meta,omitempty"`
+	LineItems          []LineItem        `json:"line_items,omitempty"`
+	TaxLines           []TaxLine         `json:"tax_lines,omitempty"`
+	ShippingLines      []ShippingLines   `json:"shipping_lines,omitempty"`
+	FeeLines           []FeeLine         `json:"fee_lines,omitempty"`
+	CouponLines        []CouponLine      `json:"coupon_lines,omitempty"`
+	Refunds            []Refund          `json:"refunds,omitempty"`
+	PaymentUrl         string            `json:"payment_url,omitempty"`
+	CurrencySymbol     string            `json:"currency_symbol,omitempty"`
+	Links              Links             `json:"_links"`
+	SetPaid            bool              `json:"set_paid,omitempty"`
+	IsEditable         bool              `json:"is_editable,omitempty"`
+	NeedsPayment       bool              `json:"needs_payment,omitempty"`
+	NeedsProcessing    bool              `json:"needs_processing,omitempty"`
+	TrackingCode       string            `json:"correios_tracking_code,omitempty"`
+	OrderType          string            `json:"order_type,omitempty"`
+	Paghiper           *WC_Paghiper_Data `json:"wc_paghiper_data,omitempty"`
+	NFE                []NFE             `json:"nfe,omitempty"`
+	Paypal             PaypalData        `json:"paypal_data,omitempty"` // PayPal specific data
+}
+
+type WC_Paghiper_Data struct {
+	OrderTransactionDueDate   StringTime  `json:"order_transaction_due_date,omitempty"`
+	TransactionType           string      `json:"transaction_type,omitempty"`
+	TransactionID             string      `json:"transaction_id,omitempty"`
+	ValueCents                StringFloat `json:"value_cents,omitempty"`
+	Status                    string      `json:"status,omitempty"`
+	OrderID                   StringInt   `json:"order_id,omitempty"`
+	CurrentTransactionDueDate StringTime  `json:"current_transaction_due_date,omitempty"`
+	QrcodeBase64              string      `json:"qrcode_base64,omitempty"`
+	QrcodeImageURL            string      `json:"qrcode_image_url,omitempty"`
+	EMV                       string      `json:"emv,omitempty"`
+	BacenURL                  string      `json:"bacen_url,omitempty"`
+	PixURL                    string      `json:"pix_url,omitempty"`
+	DigitableLine             string      `json:"digitable_line,omitempty"`
+	URLSlip                   string      `json:"url_slip,omitempty"`
+	URLSlipPDF                string      `json:"url_slip_pdf,omitempty"`
+	Barcode                   string      `json:"barcode,omitempty"`
+}
+
+type NFE struct {
+	UUID                 string     `json:"uuid,omitempty"`
+	Status               string     `json:"status,omitempty"`
+	Modelo               string     `json:"modelo,omitempty"`
+	ChaveAcesso          string     `json:"chave_acesso,omitempty"`
+	NRecibo              StringInt  `json:"n_recibo,omitempty"`
+	NNFE                 StringInt  `json:"n_nfe,omitempty"`
+	NSerie               StringInt  `json:"n_serie,omitempty"`
+	NFEDoc               string     `json:"nfe_doc,omitempty"`
+	URLXML               string     `json:"url_xml,omitempty"`
+	URLDanfe             string     `json:"url_danfe,omitempty"`
+	URLDanfeSimplificada string     `json:"url_danfe_simplificada,omitempty"`
+	URLDanfeEtiqueta     string     `json:"url_danfe_etiqueta,omitempty"`
+	Data                 StringTime `json:"data,omitempty"`
+}
+
+type PaypalData struct {
+	TransactionID  string     `json:"transaction_id,omitempty"`
+	PaidDate       StringTime `json:"paid_date,omitempty"`
+	CompletedDate  StringTime `json:"completed_date,omitempty"`
+	SubscriptionID string     `json:"subscription_id,omitempty"`
+	Status         string     `json:"status,omitempty"`
+	IPNTrackingIDs []string   `json:"ipn_tracking_ids,omitempty"`
 }
 
 type Links struct {
@@ -177,7 +224,7 @@ type Billing struct {
 	CellPhone      string     `json:"cellphone,omitempty"`
 	Sex            string     `json:"gender,omitempty"`
 	ChurchEmail    string     `json:"church_email,omitempty"`
-	ChurchSize     Stringint  `json:"church_size,omitempty"`
+	ChurchSize     StringInt  `json:"church_size,omitempty"`
 	PayerName      string     `json:"payer_name,omitempty"`
 	PayerEmail     string     `json:"payer_email,omitempty"`
 	PayerPhone     string     `json:"payer_phone,omitempty"`
@@ -248,28 +295,28 @@ func (p *PersonType) UnmarshalJSON(id []byte) error {
 	return nil
 }
 
-type Stringint int64
+type StringInt int64
 
-func (i *Stringint) UnmarshalJSON(id []byte) error {
+func (i *StringInt) UnmarshalJSON(id []byte) error {
 	s := string(id)
 	if s == "" || s == "\"\"" {
-		*i = Stringint(0)
+		*i = StringInt(0)
 		return nil
 	}
 	i_, err := strconv.Atoi(strings.Trim(strings.ReplaceAll(string(id), `"`, ""), " "))
-	*i = Stringint(i_)
+	*i = StringInt(i_)
 	if err != nil {
 		fmt.Printf("error parsing stringint %s: %v, setting to Zero", id, err)
 	}
 	return nil
 }
 
-func (i *Stringint) MarshalJSON() ([]byte, error) {
+func (i *StringInt) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("%d", *i)), nil
 }
 
 type Image struct {
-	ID  Stringint `json:"id,omitempty"`
+	ID  StringInt `json:"id,omitempty"`
 	Src string    `json:"src,omitempty"`
 }
 

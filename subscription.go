@@ -127,7 +127,7 @@ type Subscription struct {
 	FeeLines                 []FeeLine       `json:"fee_lines,omitempty"`
 	CouponLines              []CouponLine    `json:"coupon_lines,omitempty"`
 	BillingPeriod            string          `json:"billing_period,omitempty"`
-	BillingInterval          Stringint       `json:"billing_interval,omitempty"`
+	BillingInterval          StringInt       `json:"billing_interval,omitempty"`
 	ResubscribedFrom         string          `json:"resubscribed_from,omitempty"`
 	ResubscribedSubscription string          `json:"resubscribed_subscription,omitempty"`
 	RemovedLineItems         []LineItem      `json:"removed_line_items,omitempty"`

@@ -41,9 +41,9 @@ type Product struct {
 	Description       string             `json:"description"`
 	ShortDescription  string             `json:"short_description"`
 	SKU               string             `json:"sku"`
-	Price             string             `json:"price"`
-	RegularPrice      string             `json:"regular_price"`
-	SalePrice         string             `json:"sale_price"`
+	Price             *StringFloat       `json:"price"`
+	RegularPrice      *StringFloat       `json:"regular_price"`
+	SalePrice         *StringFloat       `json:"sale_price"`
 	DateOnSaleFrom    StringTime         `json:"date_on_sale_from"`
 	DateOnSaleTo      StringTime         `json:"date_on_sale_to"`
 	PriceHTML         string             `json:"price_html"`
@@ -98,20 +98,19 @@ type Product struct {
 
 type StringTime time.Time
 
-func (i *StringTime) UnmarshalJSON(t []byte) error {
+func (i *StringTime) UnmarshalJSON(t []byte) (err error) {
 	s := strings.Trim(string(t), "\"")
 	if len(s) == 0 || s == "null" {
 		return nil
 	}
 
-	dateTime, err := time.Parse("2006-01-02T15:04:05", s)
-	if err != nil {
-		dateTime, err = time.Parse("2006-01-02", s)
-		if err != nil {
-			return err
+	for _, format := range []string{"2006-01-02T15:04:05", "2006-01-02", "02/01/2006"} {
+		dateTime, err := time.Parse(format, s)
+		if err == nil {
+			*i = StringTime(dateTime)
+			return nil
 		}
 	}
-	*i = StringTime(dateTime)
 	return err
 }
 
@@ -120,9 +119,10 @@ func (i *StringTime) MarshalJSON() ([]byte, error) {
 	return t.MarshalJSON()
 }
 
-func (i *StringTime) Time() time.Time {
-	return time.Time(*i)
-	}
+func (i *StringTime) Time() *time.Time {
+	t := time.Time(*i)
+	return &t
+}
 
 type StringFloat float32
 
