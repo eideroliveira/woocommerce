@@ -117,7 +117,7 @@ type Order struct {
 	ShippingLines      []ShippingLines   `json:"shipping_lines,omitempty"`
 	FeeLines           []FeeLine         `json:"fee_lines,omitempty"`
 	CouponLines        []CouponLine      `json:"coupon_lines,omitempty"`
-	Refunds            []Refund          `json:"refund,omitempty"`
+	Refunds            []Refund          `json:"refunds,omitempty"`
 	PaymentUrl         string            `json:"payment_url,omitempty"`
 	CurrencySymbol     string            `json:"currency_symbol,omitempty"`
 	Links              Links             `json:"_links"`
