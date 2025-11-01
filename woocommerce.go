@@ -93,7 +93,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 		Client: &http.Client{
 			Timeout: time.Second * defaultHttpTimeout,
 		},
-		log:        &LeveledLogger{Level: LevelInfo},
+		log:        &LeveledLogger{Level: LevelDebug},
 		app:        app,
 		baseURL:    baseURL,
 		version:    defaultVersion,
