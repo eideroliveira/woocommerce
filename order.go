@@ -112,6 +112,7 @@ type Order struct {
 	DateCompletedGmt   StringTime        `json:"date_completed_gmt,omitempty"`
 	CartHash           string            `json:"cart_hash,omitempty"`
 	MetaData           []MetaData        `json:"meta,omitempty"`
+	Renewal            StringInt         `json:"renewal,omitempty"`
 	LineItems          []LineItem        `json:"line_items,omitempty"`
 	TaxLines           []TaxLine         `json:"tax_lines,omitempty"`
 	ShippingLines      []ShippingLines   `json:"shipping_lines,omitempty"`

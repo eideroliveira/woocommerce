@@ -119,8 +119,9 @@ func (i *StringTime) MarshalJSON() ([]byte, error) {
 	return t.MarshalJSON()
 }
 
-func (i *StringTime) Time() time.Time {
-	return time.Time(*i)
+func (i *StringTime) Time() *time.Time {
+	t := time.Time(*i)
+	return &t
 }
 
 type StringFloat float32

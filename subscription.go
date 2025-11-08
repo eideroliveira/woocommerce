@@ -18,6 +18,7 @@ type SubscriptionService interface {
 	Delete(subscriptionID int64, options interface{}) (*Subscription, error)
 	Batch(option SubscriptionBatchOption) (*SubscriptionBatchResource, error)
 	ListWithPagination(options interface{}) ([]Subscription, *Pagination, error)
+	GetOrders(subscriptionID int64, options interface{}) ([]Order, *Pagination, error)
 }
 
 // SubscriptionServiceOp handles communication with the subscription related methods of WooCommerce'API
@@ -204,4 +205,21 @@ func (o *SubscriptionServiceOp) Batch(data SubscriptionBatchOption) (*Subscripti
 	resource := new(SubscriptionBatchResource)
 	err := o.client.Post(path, data, &resource)
 	return resource, err
+}
+
+// GetOrders lists orders for a subscription and return pagination to retrieve next/previous results.
+func (o *SubscriptionServiceOp) GetOrders(subscriptionID int64, options interface{}) ([]Order, *Pagination, error) {
+	path := fmt.Sprintf("%s/%d/orders", subscriptionsBasePath, subscriptionID)
+	resource := make([]Order, 0)
+	headers, err := o.client.createAndDoGetHeaders("GET", path, nil, options, &resource)
+	if err != nil {
+		return nil, nil, err
+	}
+	// Extract pagination info from header
+	pagination, err := extractPagination(headers)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return resource, pagination, err
 }
