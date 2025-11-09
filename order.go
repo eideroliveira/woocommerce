@@ -160,12 +160,15 @@ type NFE struct {
 	ChaveAcesso          string     `json:"chave_acesso,omitempty"`
 	NRecibo              StringInt  `json:"n_recibo,omitempty"`
 	NNFE                 StringInt  `json:"n_nfe,omitempty"`
-	NSerie               StringInt  `json:"n_serie,omitempty"`
+	NSerie               StringOrInt  `json:"n_serie,omitempty"`
 	NFEDoc               string     `json:"nfe_doc,omitempty"`
+	PDF                  string     `json:"pdf,omitempty"`
+	URLPDF               string     `json:"url_pdf,omitempty"`
 	URLXML               string     `json:"url_xml,omitempty"`
 	URLDanfe             string     `json:"url_danfe,omitempty"`
 	URLDanfeSimplificada string     `json:"url_danfe_simplificada,omitempty"`
 	URLDanfeEtiqueta     string     `json:"url_danfe_etiqueta,omitempty"`
+	PDFRPS               string     `json:"pdf_rps,omitempty"`
 	Data                 StringTime `json:"data,omitempty"`
 }
 
@@ -315,6 +318,44 @@ func (i *StringInt) UnmarshalJSON(id []byte) error {
 
 func (i *StringInt) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("%d", *i)), nil
+}
+
+func (i StringInt) String() string {
+	return fmt.Sprintf("%d", i)
+}
+
+func (i StringInt) Int64() int64 {
+	return int64(i)
+}
+
+type StringOrInt string
+
+func (i *StringOrInt) UnmarshalJSON(id []byte) error {
+	s := string(id)
+	if s == "" || s == "\"\"" {
+		*i = StringOrInt("")
+		return nil
+	}
+	i_, err := strconv.Atoi(strings.Trim(strings.ReplaceAll(s, `"`, ""), " "))
+	if err == nil {
+		*i = StringOrInt(fmt.Sprintf("%d", i_))
+	} else {
+		*i = StringOrInt(s)
+	}
+	return nil
+}
+
+func (i StringOrInt) MarshalJSON() ([]byte, error) {
+	return []byte(i), nil
+}
+
+func (i StringOrInt) String() string {
+	return string(i)
+}
+
+func (i StringOrInt) Int64() int64 {
+	i_, _ := strconv.Atoi(string(i))
+	return int64(i_)
 }
 
 type Image struct {
