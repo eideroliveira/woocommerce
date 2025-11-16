@@ -59,7 +59,7 @@ type Client struct {
 	retries  int
 	attempts int
 
-  File              FileService
+	File              FileService
 	Customer          CustomerService
 	RateLimits        RateLimitInfo
 	Product           ProductService
@@ -197,6 +197,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 		decoder.DisallowUnknownFields()
 		err := decoder.Decode(&v)
 		if err != nil {
+			c.log.Errorf("error decoding %+v: %v", v, err)
 			return nil, err
 		}
 	}
@@ -329,7 +330,7 @@ func (c *Client) logBody(body *io.ReadCloser, format string) {
 	}
 	b, _ := ioutil.ReadAll(*body)
 	bBuf := bytes.NewBuffer(b)
-	if len(b) > 0 {//&& len(b) < 512 {
+	if len(b) > 0 { //&& len(b) < 512 {
 		buf := bytes.Buffer{}
 		json.Indent(&buf, b, "", " ")
 
