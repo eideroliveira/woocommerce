@@ -198,6 +198,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 		err := decoder.Decode(&v)
 		if err != nil {
 			c.log.Errorf("error decoding %+v: %v", v, err)
+			c.logBodyError(&resp.Body)
 			return nil, err
 		}
 	}
@@ -335,6 +336,21 @@ func (c *Client) logBody(body *io.ReadCloser, format string) {
 		json.Indent(&buf, b, "", " ")
 
 		c.log.Debugf(format, buf.String())
+	}
+	*body = io.NopCloser(bBuf)
+}
+
+func (c *Client) logBodyError(body *io.ReadCloser) {
+	if body == nil {
+		return
+	}
+	b, _ := ioutil.ReadAll(*body)
+	bBuf := bytes.NewBuffer(b)
+	if len(b) > 0 { //&& len(b) < 512 {
+		buf := bytes.Buffer{}
+		json.Indent(&buf, b, "", " ")
+
+		c.log.Errorf("Error: %s", buf.String())
 	}
 	*body = io.NopCloser(bBuf)
 }

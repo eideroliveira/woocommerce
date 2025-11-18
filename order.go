@@ -119,7 +119,6 @@ type Order struct {
 	FeeLines           []FeeLine         `json:"fee_lines,omitempty"`
 	CouponLines        []CouponLine      `json:"coupon_lines,omitempty"`
 	Refunds            []Refund          `json:"refunds,omitempty"`
-	Refund             Refund            `json:"refund,omitempty"`
 	PaymentUrl         string            `json:"payment_url,omitempty"`
 	CurrencySymbol     string            `json:"currency_symbol,omitempty"`
 	Links              Links             `json:"_links"`
@@ -397,7 +396,7 @@ type FeeLine struct {
 
 type Refund struct {
 	ID     int64  `json:"id,omitempty"`
-	Reason string `json:"reason,omitempty"`
+	Reason string `json:"refund,omitempty"`
 	Total  string `json:"total,omitempty"`
 }
 
