@@ -2,6 +2,7 @@ package woocommerce
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -453,7 +454,8 @@ func (c *Client) NewRequest(method, relPath string, body, options interface{}) (
 		}
 	}
 
-	req, err := http.NewRequest(method, u.String(), bytes.NewBuffer(js))
+	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(10*time.Minute))
+	req, err := http.NewRequestWithContext(ctx, method, u.String(), bytes.NewBuffer(js))
 	if err != nil {
 		return nil, err
 	}
