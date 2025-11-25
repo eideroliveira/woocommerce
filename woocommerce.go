@@ -2,11 +2,9 @@ package woocommerce
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"path"
@@ -233,7 +231,7 @@ func CheckResponseError(r *http.Response) error {
 		Data    interface{} `json:"data"`
 	}{}
 
-	bodyBytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		return ResponseError{
 			Status:  r.StatusCode,
@@ -330,7 +328,7 @@ func (c *Client) logBody(body *io.ReadCloser, format string) {
 	if body == nil {
 		return
 	}
-	b, _ := ioutil.ReadAll(*body)
+	b, _ := io.ReadAll(*body)
 	bBuf := bytes.NewBuffer(b)
 	if len(b) > 0 { //&& len(b) < 512 {
 		buf := bytes.Buffer{}
@@ -345,7 +343,7 @@ func (c *Client) logBodyError(body *io.ReadCloser) {
 	if body == nil {
 		return
 	}
-	b, _ := ioutil.ReadAll(*body)
+	b, _ := io.ReadAll(*body)
 	bBuf := bytes.NewBuffer(b)
 	if len(b) > 0 { //&& len(b) < 512 {
 		buf := bytes.Buffer{}
@@ -421,6 +419,7 @@ func (c *Client) createAndDoGetHeaders(method, relPath string, data, options, re
 // specified without a preceding slash. If specified, the value pointed to by
 // body is JSON encoded and included as the request body.
 func (c *Client) NewRequest(method, relPath string, body, options interface{}) (*http.Request, error) {
+	// fmt.Println("DEBUG: NewRequest called for", relPath) 
 	rel, err := url.Parse(relPath)
 	if err != nil {
 		return nil, err
@@ -454,10 +453,9 @@ func (c *Client) NewRequest(method, relPath string, body, options interface{}) (
 		}
 	}
 
-	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(10*time.Minute))
-	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, method, u.String(), bytes.NewBuffer(js))
+	req, err := http.NewRequest(method, u.String(), bytes.NewBuffer(js))
 	if err != nil {
+		log.Errorf("request failed %q: %s %s %q", err.Error(), method, u.String(), js)
 		return nil, err
 	}
 
