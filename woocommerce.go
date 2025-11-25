@@ -454,7 +454,8 @@ func (c *Client) NewRequest(method, relPath string, body, options interface{}) (
 		}
 	}
 
-	ctx, _ := context.WithDeadline(context.Background(), time.Now().Add(10*time.Minute))
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(10*time.Minute))
+	defer cancel()
 	req, err := http.NewRequestWithContext(ctx, method, u.String(), bytes.NewBuffer(js))
 	if err != nil {
 		return nil, err

@@ -1,9 +1,5 @@
 package woocommerce
 
-const (
-	productVarisationBasePath = "products/<product_id>/variations"
-)
-
 // ProductVariationService is an interface for interfacing with the product variations endpoints of woocommerce API
 // https://woocommerce.github.io/woocommerce-rest-api-docs/#product-variations
 type ProductVariationService interface {
