@@ -93,6 +93,22 @@ type Product struct {
 	MetaData          []MetaDatum        `json:"meta"`
 	DownloadType      string             `json:"download_type"`
 	Links             Links              `json:"_links"`
+	NFE               *ProductNFE        `json:"nfe"`
+}
+
+type ProductNFE struct {
+	TipoProduto                string `json:"tipo_produto"`
+	ClasseImposto              string `json:"classe_imposto"`
+	CodigoEan                  string `json:"codigo_ean"`
+	GtinTributavel             string `json:"gtin_tributavel"`
+	CodigoNcm                  string `json:"codigo_ncm"`
+	CodigoCest                 string `json:"codigo_cest"`
+	CnpjFabricante             string `json:"cnpj_fabricante"`
+	IndEscala                  string `json:"ind_escala"`
+	ProdutoInformacoesAdicionais string `json:"produto_informacoes_adicionais"`
+	Unidade                    string `json:"unidade"`
+	IgnorarNfe                 string `json:"ignorar_nfe"`
+	Origem                     string `json:"origem"`
 }
 
 
