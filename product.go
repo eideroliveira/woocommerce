@@ -23,6 +23,7 @@ type ProductService interface {
 	Update(product *Product) (*Product, error)
 	Delete(productID int64, options interface{}) (*Product, error)
 	Batch(option ProductBatchOption) (*ProductBatchResource, error)
+	ListVariations(productID int64, options interface{}) ([]Product, error)
 }
 
 // Product represent WooCommerce Product
@@ -32,8 +33,10 @@ type Product struct {
 	Name              string             `json:"name"`
 	Slug              string             `json:"slug"`
 	Permalink         string             `json:"permalink"`
-	DateCreated       StringTime         `json:"date_created"`
-	DateModified      StringTime         `json:"date_modified"`
+	DateCreated       StringTime         `json:"date_created,omitempty"`
+	DateCreatedGmt    StringTime         `json:"date_created_gmt,omitempty"`
+	DateModified      StringTime         `json:"date_modified,omitempty"`
+	DateModifiedGmt   StringTime         `json:"date_modified_gmt,omitempty"`
 	Type              string             `json:"type"`
 	Status            string             `json:"status"`
 	Featured          bool               `json:"featured"`
@@ -41,15 +44,18 @@ type Product struct {
 	Description       string             `json:"description"`
 	ShortDescription  string             `json:"short_description"`
 	SKU               string             `json:"sku"`
+	GlobalUniqueID    string             `json:"global_unique_id"`
 	Price             *StringFloat       `json:"price"`
 	RegularPrice      *StringFloat       `json:"regular_price"`
 	SalePrice         *StringFloat       `json:"sale_price"`
 	DateOnSaleFrom    StringTime         `json:"date_on_sale_from"`
+	DateOnSaleFromGmt StringTime         `json:"date_on_sale_from_gmt"`
 	DateOnSaleTo      StringTime         `json:"date_on_sale_to"`
+	DateOnSaleToGmt   StringTime         `json:"date_on_sale_to_gmt"`
 	PriceHTML         string             `json:"price_html"`
 	OnSale            bool               `json:"on_sale"`
 	Purchasable       bool               `json:"purchasable"`
-	TotalSales        StringFloat                `json:"total_sales"`
+	TotalSales        StringFloat        `json:"total_sales"`
 	Virtual           bool               `json:"virtual"`
 	Visible           bool               `json:"visible"`
 	Downloadable      bool               `json:"downloadable"`
@@ -62,6 +68,7 @@ type Product struct {
 	TaxClass          string             `json:"tax_class"`
 	ManageStock       bool               `json:"manage_stock"`
 	StockQuantity     *int               `json:"stock_quantity"`
+	StockStatus       string             `json:"stock_status"`
 	InStock           bool               `json:"in_stock"`
 	Backorders        string             `json:"backorders"`
 	BackordersAllowed bool               `json:"backorders_allowed"`
@@ -75,42 +82,52 @@ type Product struct {
 	ShippingClassId   int                `json:"shipping_class_id"`
 	ReviewsAllowed    bool               `json:"reviews_allowed"`
 	AverageRating     string             `json:"average_rating"`
+	RatingCounts      interface{}        `json:"rating_counts"`
+	ReviewCount       int                `json:"review_count"`
 	RatingCount       int                `json:"rating_count"`
 	RelatedIds        []int              `json:"related_ids"`
 	UpsellIds         []int              `json:"upsell_ids"`
 	CrossSellIds      []int              `json:"cross_sell_ids"`
 	ParentId          int                `json:"parent_id"`
 	PurchaseNote      string             `json:"purchase_note"`
+	LowStockAmount    int                `json:"low_stock_amount"`
 	Categories        []ProductCategory  `json:"categories"`
+	CategoryIds       []int              `json:"category_ids"`
 	Tags              []ProductTag       `json:"tags"`
+	TagIds            []int              `json:"tag_ids"`
 	Image             []ProductImage     `json:"image"`
 	Images            []ProductImage     `json:"images"`
 	Attributes        []ProductAttribute `json:"attributes"`
 	DefaultAttributes []ProductAttribute `json:"default_attributes"`
-	Variations        []Product          `json:"variations"`
+	Variations        []int              `json:"variations"`
 	GroupedProducts   []int              `json:"grouped_products"`
 	MenuOrder         int                `json:"menu_order"`
+	PostPassword      string             `json:"post_password"`
+	ImageID           string             `json:"image_id"`
+	GalleryImageIDs   []int              `json:"gallery_image_ids"`
 	MetaData          []MetaDatum        `json:"meta"`
-	DownloadType      string             `json:"download_type"`
+	MetaDataList      []MetaDatum        `json:"meta_data,omitempty"`
+	DownloadType                        string             `json:"download_type"`
+	HasOptions                          bool               `json:"has_options"`
+	GoogleListingsAndAdsChannelVisibility map[string]interface{} `json:"google_listings_and_ads__channel_visibility"`
 	Links             Links              `json:"_links"`
 	NFE               *ProductNFE        `json:"nfe"`
 }
 
 type ProductNFE struct {
-	TipoProduto                string `json:"tipo_produto"`
-	ClasseImposto              string `json:"classe_imposto"`
-	CodigoEan                  string `json:"codigo_ean"`
-	GtinTributavel             string `json:"gtin_tributavel"`
-	CodigoNcm                  string `json:"codigo_ncm"`
-	CodigoCest                 string `json:"codigo_cest"`
-	CnpjFabricante             string `json:"cnpj_fabricante"`
-	IndEscala                  string `json:"ind_escala"`
+	TipoProduto                  string `json:"tipo_produto"`
+	ClasseImposto                string `json:"classe_imposto"`
+	CodigoEan                    string `json:"codigo_ean"`
+	GtinTributavel               string `json:"gtin_tributavel"`
+	CodigoNcm                    string `json:"codigo_ncm"`
+	CodigoCest                   string `json:"codigo_cest"`
+	CnpjFabricante               string `json:"cnpj_fabricante"`
+	IndEscala                    string `json:"ind_escala"`
 	ProdutoInformacoesAdicionais string `json:"produto_informacoes_adicionais"`
-	Unidade                    string `json:"unidade"`
-	IgnorarNfe                 string `json:"ignorar_nfe"`
-	Origem                     string `json:"origem"`
+	Unidade                      string `json:"unidade"`
+	IgnorarNfe                   string `json:"ignorar_nfe"`
+	Origem                       string `json:"origem"`
 }
-
 
 type StringTime time.Time
 
@@ -195,18 +212,21 @@ type ProductTag struct {
 }
 
 type ProductImage struct {
-	ID           int        `json:"id"`
-	DateCreated  StringTime `json:"date_created"`
-	DateModified StringTime `json:"date_modified"`
-	Src          string     `json:"src"`
-	Name         string     `json:"name"`
-	Alt          string     `json:"alt"`
-	Position     uint       `json:"position"`
+	ID              int        `json:"id"`
+	DateCreated     StringTime `json:"date_created"`
+	DateCreatedGmt  StringTime `json:"date_created_gmt"`
+	DateModified    StringTime `json:"date_modified"`
+	DateModifiedGmt StringTime `json:"date_modified_gmt"`
+	Src             string     `json:"src"`
+	Name            string     `json:"name"`
+	Alt             string     `json:"alt"`
+	Position        uint       `json:"position"`
 }
 
 type ProductAttribute struct {
 	ID        int      `json:"id"`
 	Name      string   `json:"name"`
+	Slug      string   `json:"slug"`
 	Position  int      `json:"position"`
 	Visible   bool     `json:"visible"`
 	Variation bool     `json:"variation"`
@@ -222,8 +242,8 @@ type MetaDatum struct {
 
 // Pagination of results
 type Pagination struct {
-	Total uint64
-	TotalPages uint64
+	Total               uint64
+	TotalPages          uint64
 	NextPageOptions     *ListOptions
 	PreviousPageOptions *ListOptions
 	FirstPageOptions    *ListOptions
@@ -295,7 +315,6 @@ func (o *ProductServiceOp) Get(productID int64, options interface{}) (*Product, 
 	return resource, err
 }
 
-
 func (o *ProductServiceOp) Update(product *Product) (*Product, error) {
 	path := fmt.Sprintf("%s/%d", productsBasePath, product.ID)
 	resource := new(Product)
@@ -317,6 +336,14 @@ func (o *ProductServiceOp) Batch(data ProductBatchOption) (*ProductBatchResource
 	return resource, err
 }
 
+// ListVariations lists all variations of a product
+func (o *ProductServiceOp) ListVariations(productID int64, options interface{}) ([]Product, error) {
+	path := fmt.Sprintf("%s/%d/variations", productsBasePath, productID)
+	resource := make([]Product, 0)
+	err := o.client.Get(path, &resource, options)
+	return resource, err
+}
+
 var log = &LeveledLogger{Level: LevelDebug}
 
 // extractPagination extracts pagination info from linkHeader.
@@ -327,7 +354,7 @@ var log = &LeveledLogger{Level: LevelDebug}
 func extractPagination(headers http.Header) (*Pagination, error) {
 	pagination := new(Pagination)
 	linkHeader := headers.Get("Link")
-		var err error
+	var err error
 	if pagination.Total, err = strconv.ParseUint(headers.Get("X-Wp-Total"), 10, 0); err != nil {
 		pagination.Total = 1
 	}

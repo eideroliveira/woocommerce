@@ -105,7 +105,8 @@ type Customer struct {
   Billing           *Billing               `json:"billing,omitempty"`
   Shipping          *Shipping              `json:"shipping,omitempty"`
   CartHash          string                 `json:"cart_hash,omitempty"`
-  MetaData          []MetaData             `json:"meta,omitempty"`
+	Meta        []MetaData  `json:"meta,omitempty"`
+	MetaData    []MetaData  `json:"meta_data,omitempty"`
   Links             Links                  `json:"_links"`
 }
 

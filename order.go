@@ -111,7 +111,8 @@ type Order struct {
 	DateCompleted      StringTime        `json:"date_completed,omitempty"`
 	DateCompletedGmt   StringTime        `json:"date_completed_gmt,omitempty"`
 	CartHash           string            `json:"cart_hash,omitempty"`
-	MetaData           []MetaData        `json:"meta,omitempty"`
+	Meta               []MetaData        `json:"meta,omitempty"`
+	MetaData           []MetaData        `json:"meta_data,omitempty"`
 	Renewal            StringInt         `json:"renewal,omitempty"`
 	LineItems          []LineItem        `json:"line_items,omitempty"`
 	TaxLines           []TaxLine         `json:"tax_lines,omitempty"`
@@ -275,7 +276,8 @@ type LineItem struct {
 	Total       string      `json:"total,omitempty"`
 	TotalTax    string      `json:"total_tax,omitempty"`
 	Taxes       []TaxLine   `json:"taxes,omitempty"`
-	MetaData    []MetaData  `json:"meta,omitempty"`
+	Meta        []MetaData  `json:"meta,omitempty"`
+	MetaData    []MetaData  `json:"meta_data,omitempty"`
 	SKU         string      `json:"sku,omitempty"`
 	Price       StringFloat `json:"price,omitempty"`
 	Image       Image       `json:"image,omitempty"`
@@ -370,7 +372,8 @@ type TaxLine struct {
 	Compound         bool       `json:"compound,omitempty"`
 	TaxTotal         string     `json:"tax_total"`
 	ShippingTaxTotal string     `json:"shipping_tax_total,omitempty"`
-	MetaData         []MetaData `json:"meta,omitempty"`
+	Meta        []MetaData  `json:"meta,omitempty"`
+	MetaData    []MetaData  `json:"meta_data,omitempty"`
 }
 
 type MetaData struct {
@@ -391,7 +394,8 @@ type FeeLine struct {
 	Total     string     `json:"total,omitempty"`
 	TotalTax  string     `json:"total_tax,omitempty"`
 	Taxes     []TaxLine  `json:"taxes,omitempty"`
-	MetaData  []MetaData `json:"meta,omitempty"`
+	Meta        []MetaData  `json:"meta,omitempty"`
+	MetaData    []MetaData  `json:"meta_data,omitempty"`
 }
 
 type Refund struct {
@@ -407,15 +411,29 @@ type ShippingLines struct {
 	Total       string     `json:"total,omitempty"`
 	TotalTax    string     `json:"total_tax,omitempty"`
 	Taxes       []TaxLine  `json:"taxes,omitempty"`
-	MetaData    []MetaData `json:"meta,omitempty"`
+	Meta        []MetaData  `json:"meta,omitempty"`
+	MetaData    []MetaData  `json:"meta_data,omitempty"`
 }
 
 type CouponLine struct {
-	ID          int64      `json:"id,omitempty"`
-	Code        string     `json:"code,omitempty"`
-	Discount    string     `json:"discount,omitempty"`
-	DiscountTax string     `json:"discount_tax,omitempty"`
-	MetaData    []MetaData `json:"meta,omitempty"`
+	ID           int64      `json:"id,omitempty"`
+	Code         string     `json:"code,omitempty"`
+	Discount     string     `json:"discount,omitempty"`
+	DiscountTax  string     `json:"discount_tax,omitempty"`
+	NominalAmount float64    `json:"nominal_amount,omitempty"`
+	FreeShipping  bool       `json:"free_shipping,omitempty"`
+	Meta         []MetaData `json:"meta,omitempty"`
+	MetaData     []MetaData `json:"meta_data,omitempty"`
+	DiscountType string     `json:"discount_type,omitempty"`
+}
+
+func GetMetaData(md []MetaData, key string) (interface{}, error) {
+	for _, m := range md {
+		if m.Key == key {
+			return m.Value, nil
+		}
+	}
+	return nil, fmt.Errorf("meta data key %s not found", key)
 }
 
 func (o *OrderServiceOp) List(options interface{}) ([]Order, error) {

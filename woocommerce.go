@@ -19,8 +19,8 @@ import (
 const (
 	UserAgent            = "woocommerce/1.0.0"
 	defaultHttpTimeout   = 60
-	defaultApiPathPrefix = "/wp-json/wc/v1"
-	defaultVersion       = "v1"
+	defaultApiPathPrefix = "/wp-json/wc/v3"
+	defaultVersion       = "v3"
 )
 
 var (
@@ -69,6 +69,7 @@ type Client struct {
 	Subscription      SubscriptionService
 	SubscriptionNote  SubscriptionNoteService
 	SubscriptionOrder SubscriptionOrderService
+	Coupon            CouponService
 }
 
 // NewClient returns a new WooCommerce API client with an already authenticated shopname and
@@ -108,6 +109,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 	c.Subscription = &SubscriptionServiceOp{client: c}
 	c.SubscriptionNote = &SubscriptionNoteServiceOp{client: c}
 	c.SubscriptionOrder = &SubscriptionOrderServiceOp{client: c}
+	c.Coupon = &CouponServiceOp{client: c}
 	for _, opt := range opts {
 		opt(c)
 	}
@@ -350,6 +352,8 @@ func (c *Client) logBodyError(body *io.ReadCloser) {
 		json.Indent(&buf, b, "", " ")
 
 		c.log.Errorf("Error: %s", buf.String())
+	} else {
+		c.log.Errorf("Error: body is EMPTY")
 	}
 	*body = io.NopCloser(bBuf)
 }

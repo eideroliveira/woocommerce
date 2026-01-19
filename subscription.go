@@ -121,7 +121,8 @@ type Subscription struct {
 	CreatedVia               string          `json:"created_via,omitempty"`
 	CustomerNote             string          `json:"customer_note,omitempty"`
 	Number                   string          `json:"number,omitempty"`
-	MetaData                 []MetaData      `json:"meta,omitempty"`
+	Meta                     []MetaData      `json:"meta,omitempty"`
+	MetaData                 []MetaData      `json:"meta_data,omitempty"`
 	LineItems                []LineItem      `json:"line_items,omitempty"`
 	TaxLines                 []TaxLine       `json:"tax_lines,omitempty"`
 	ShippingLines            []ShippingLines `json:"shipping_lines,omitempty"`
@@ -142,7 +143,7 @@ type Subscription struct {
 	Links                    Links           `json:"_links"`
 	TransactionId            string          `json:"transaction_id,omitempty"`
 	CartHash                 string          `json:"cart_hash,omitempty"`
-	Refunds                  []Refund       `json:"refunds,omitempty"`
+	Refunds                  []Refund        `json:"refunds,omitempty"`
 }
 
 type PaymentDetails struct {
