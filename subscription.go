@@ -98,6 +98,11 @@ type Subscription struct {
 	LastPaymentDate          StringTime      `json:"last_payment_date,omitempty"`
 	LastPaymentDateGmt       StringTime      `json:"last_payment_date_gmt,omitempty"`
 	PaymentRetryDate         StringTime      `json:"payment_retry_date,omitempty"`
+	
+	// New Fields
+	TrialPeriod              string          `json:"trial_period,omitempty"`
+	SuspensionCount          int             `json:"suspension_count,omitempty"`
+	RequiresManualRenewal    bool            `json:"requires_manual_renewal,omitempty"`
 	PaymentRetryDateGmt      StringTime      `json:"payment_retry_date_gmt,omitempty"`
 	CancelledDate            StringTime      `json:"cancelled_date,omitempty"`
 	CancelledDateGmt         StringTime      `json:"cancelled_date_gmt,omitempty"`
