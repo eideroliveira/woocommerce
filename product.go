@@ -95,7 +95,7 @@ type Product struct {
 	CategoryIds       []int              `json:"category_ids"`
 	Tags              []ProductTag       `json:"tags"`
 	TagIds            []int              `json:"tag_ids"`
-	Image             []ProductImage     `json:"image"`
+	Image             *ProductImage      `json:"image"`
 	Images            []ProductImage     `json:"images"`
 	Attributes        []ProductAttribute `json:"attributes"`
 	DefaultAttributes []ProductAttribute `json:"default_attributes"`
