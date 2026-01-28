@@ -137,7 +137,18 @@ func (i *StringTime) UnmarshalJSON(t []byte) (err error) {
 		return nil
 	}
 
-	for _, format := range []string{time.RFC3339, "2006-01-02T15:04:05", "2006-01-02", "02/01/2006"} {
+	formats := []string{
+		time.RFC3339,
+		"2006-01-02T15:04:05",
+		"2006-01-02",
+		"02/01/2006",
+		"02-01-2006",
+		"2006/01/02",
+		"02/01/2006 15:04",
+		"02\\/01\\/2006",
+	}
+
+	for _, format := range formats {
 		var dateTime time.Time
 		dateTime, err = time.Parse(format, s)
 		if err == nil {
