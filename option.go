@@ -1,6 +1,9 @@
 package woocommerce
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type Option func(c *Client)
 
@@ -27,5 +30,12 @@ func WithRetry(retries int) Option {
 func WithLog(logger LeveledLoggerInterface) Option {
 	return func(c *Client) {
 		c.log = logger
+	}
+}
+
+// WithTimeout Timeout config option
+func WithTimeout(timeout time.Duration) Option {
+	return func(c *Client) {
+		c.Client.Timeout = timeout
 	}
 }
