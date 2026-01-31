@@ -17,7 +17,7 @@ type FileService interface {
 
 // FileServiceOp handles communication with the files related methods of WooCommerce restful api
 type FileServiceOp struct {
-	client *Client
+	Client *Client
 }
 
 // File represent a  wooCommerce file's All  properties columns
@@ -31,6 +31,12 @@ type File struct {
 func (w *FileServiceOp) Get(file string) (*File, error) {
 	path := fmt.Sprintf("%s/%s", filesBasePath, file)
 	resource := new(File)
-	err := w.client.Get(path, &resource, nil)
+	// Use createAndDoGetHeaders to access response headers
+	headers, err := w.Client.createAndDoGetHeaders("GET", path, nil, nil, &resource)
+	
+	if err == nil {
+		w.Client.log.Infof("FileServiceOp.Get success: file=%s, size=%d, headers=%v", file, len(resource.Content), headers)
+	}
+
 	return resource, err
 }

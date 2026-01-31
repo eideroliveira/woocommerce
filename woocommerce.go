@@ -103,7 +103,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 	c.Product = &ProductServiceOp{client: c}
 	c.Order = &OrderServiceOp{client: c}
 	c.OrderNote = &OrderNoteServiceOp{client: c}
-	c.File = &FileServiceOp{client: c}
+	c.File = &FileServiceOp{Client: c}
 	c.Webhook = &WebhookServiceOp{client: c}
 	c.PaymentGateway = &PaymentGatewayServiceOp{client: c}
 	c.Subscription = &SubscriptionServiceOp{client: c}
