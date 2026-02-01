@@ -144,11 +144,13 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 
 	for {
 		c.attempts++
+		start := time.Now()
 		resp, err = c.Client.Do(req)
+		duration := time.Since(start)
 
 		c.logResponse(resp)
 		if err != nil {
-			c.log.Errorf("HTTP Error: %v", err)
+			c.log.Errorf("HTTP Error (took %s): %v", duration, err)
 			return nil, err //http client errors, not api responses
 		}
 
@@ -156,7 +158,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 		if respErr == nil {
 			break // no errors, break out of the retry loop
 		}
-		c.log.Errorf("API error %v", respErr)
+		c.log.Errorf("API error (took %s) %v", duration, respErr)
 
 		// retry scenario, close resp and any continue will retry
 		resp.Body.Close()
@@ -198,6 +200,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 		decoder.DisallowUnknownFields()
 		err := decoder.Decode(&v)
 		if err != nil {
+			c.log.Errorf("response headers: %v", resp.Header)
 			c.log.Errorf("error decoding %+v: %v", v, err)
 			c.logBodyError(&resp.Body)
 			return nil, err
