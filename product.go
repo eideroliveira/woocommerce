@@ -148,6 +148,7 @@ func (i *StringTime) UnmarshalJSON(t []byte) (err error) {
 		"02/01/2006 15:04:05",
 		"02-01-2006 15:04:05",
 		"02-01-2006",
+		"2006-01-02 15:04:05",
 	}
 
 	for _, format := range formats {
