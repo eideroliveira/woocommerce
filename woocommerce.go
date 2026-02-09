@@ -197,7 +197,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 
 	if v != nil {
 		decoder := json.NewDecoder(resp.Body)
-		decoder.DisallowUnknownFields()
+		// decoder.DisallowUnknownFields()
 		err := decoder.Decode(&v)
 		if err != nil {
 			c.log.Errorf("response headers: %v", resp.Header)
