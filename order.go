@@ -285,15 +285,15 @@ type LineItem struct {
 }
 
 func (p *PersonType) UnmarshalJSON(id []byte) error {
-	s := string(id)
-	if s == "" || s == "\"\"" {
+	s := strings.Trim(string(id), `"`)
+	if s == "" {
 		*p = CustomerTypeUnknown
 		return nil
 	}
 	switch s {
-	case "F":
+	case "F", "1":
 		*p = CustomerPessoaFisica
-	case "J":
+	case "J", "2":
 		*p = CustomerPessoaJuridica
 	default:
 		*p = CustomerTypeUnknown
