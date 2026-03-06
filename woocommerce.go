@@ -148,7 +148,6 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 		resp, err = c.Client.Do(req)
 		duration := time.Since(start)
 
-		c.logResponse(resp)
 		if err != nil {
 			c.log.Errorf("HTTP Error (took %s): %v", duration, err)
 			return nil, err //http client errors, not api responses
@@ -187,7 +186,6 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 			continue
 		}
 
-		//fmt.Println(respErr, "err result", resp)
 		// no retry attempts, just return the err
 		return nil, respErr
 	}
@@ -329,36 +327,65 @@ func (c *Client) logResponse(res *http.Response) {
 	c.logBody(&res.Body, "RESP: %s")
 }
 
+const maxLogBodySize = 256 // 4KB max for debug body logging
+const maxLogBodyErrorSize = 8192 // 8KB max for error body logging
+
 func (c *Client) logBody(body *io.ReadCloser, format string) {
-	if body == nil {
+	if body == nil || *body == nil {
 		return
 	}
-	b, _ := io.ReadAll(*body)
-	bBuf := bytes.NewBuffer(b)
-	if len(b) > 0 { //&& len(b) < 512 {
-		buf := bytes.Buffer{}
-		json.Indent(&buf, b, "", " ")
+	// Read only a small prefix for logging to avoid buffering multi-MB responses
+	head := make([]byte, maxLogBodySize+1)
+	n, _ := io.ReadFull(*body, head)
+	head = head[:n]
 
-		c.log.Debugf(format, buf.String())
+	// Reconstruct the body: prefix we read + the rest of the stream
+	*body = io.NopCloser(io.MultiReader(bytes.NewReader(head), *body))
+
+	if n > 0 {
+		logData := head
+		truncated := ""
+		if n > maxLogBodySize {
+			logData = head[:maxLogBodySize]
+			truncated = "... [TRUNCATED]"
+		}
+		buf := bytes.Buffer{}
+		if err := json.Indent(&buf, logData, "", " "); err != nil {
+			// Not valid JSON or truncated mid-token; log raw
+			c.log.Debugf(format, string(logData)+truncated)
+		} else {
+			c.log.Debugf(format, buf.String()+truncated)
+		}
 	}
-	*body = io.NopCloser(bBuf)
 }
 
 func (c *Client) logBodyError(body *io.ReadCloser) {
-	if body == nil {
+	if body == nil || *body == nil {
 		return
 	}
-	b, _ := io.ReadAll(*body)
-	bBuf := bytes.NewBuffer(b)
-	if len(b) > 0 { //&& len(b) < 512 {
-		buf := bytes.Buffer{}
-		json.Indent(&buf, b, "", " ")
+	// For errors, read a larger prefix for diagnostic visibility
+	head := make([]byte, maxLogBodyErrorSize+1)
+	n, _ := io.ReadFull(*body, head)
+	head = head[:n]
 
-		c.log.Errorf("Error: %s", buf.String())
+	*body = io.NopCloser(io.MultiReader(bytes.NewReader(head), *body))
+
+	if n > 0 {
+		logData := head
+		truncated := ""
+		if n > maxLogBodyErrorSize {
+			logData = head[:maxLogBodyErrorSize]
+			truncated = "... [TRUNCATED]"
+		}
+		buf := bytes.Buffer{}
+		if err := json.Indent(&buf, logData, "", " "); err != nil {
+			c.log.Errorf("Error: %s%s", string(logData), truncated)
+		} else {
+			c.log.Errorf("Error: %s%s", buf.String(), truncated)
+		}
 	} else {
 		c.log.Errorf("Error: body is EMPTY")
 	}
-	*body = io.NopCloser(bBuf)
 }
 
 // ResponseError is A general response error that follows a similar layout to WooCommerce's response
