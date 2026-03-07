@@ -85,10 +85,10 @@ func (w *FileServiceOp) Get(file string) (*File, error) {
 func (w *FileServiceOp) GetStream(file string) (*FileDownload, error) {
 	relPath := fmt.Sprintf("%s/%s", filesBasePath, file)
 
-	// Build the request using the client's auth and base URL, but we'll
-	// execute and stream the response ourselves instead of going through
-	// the JSON decode path.
-	req, err := w.Client.NewRequest("GET", relPath, nil, nil)
+	// Build the request using the client's auth and base URL with the API
+	// path prefix, but stream the response ourselves instead of going
+	// through the JSON decode path.
+	req, err := w.Client.NewAPIRequest("GET", relPath, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}

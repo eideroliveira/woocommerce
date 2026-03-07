@@ -435,17 +435,22 @@ func (c *Client) CreateAndDo(method, relPath string, data, options, resource int
 
 // createAndDoGetHeaders creates an executes a request while returning the response headers.
 func (c *Client) createAndDoGetHeaders(method, relPath string, data, options, resource interface{}) (http.Header, error) {
-	if strings.HasPrefix(relPath, "/") {
-		relPath = strings.TrimLeft(relPath, "/")
-	}
-
-	relPath = path.Join(c.pathPrefix, relPath)
-	req, err := c.NewRequest(method, relPath, data, options)
+	req, err := c.NewAPIRequest(method, relPath, data, options)
 	if err != nil {
 		c.log.Errorf("Error creating request: %s", err)
 		return nil, err
 	}
 	return c.doGetHeaders(req, resource)
+}
+
+// NewAPIRequest creates an HTTP request with the API path prefix prepended.
+// Use this instead of NewRequest when calling WooCommerce API endpoints.
+func (c *Client) NewAPIRequest(method, relPath string, body, options interface{}) (*http.Request, error) {
+	if strings.HasPrefix(relPath, "/") {
+		relPath = strings.TrimLeft(relPath, "/")
+	}
+	relPath = path.Join(c.pathPrefix, relPath)
+	return c.NewRequest(method, relPath, body, options)
 }
 
 // Creates an API request. A relative URL can be provided in urlStr, which will
