@@ -33,6 +33,11 @@ func WithLog(logger LeveledLoggerInterface) Option {
 	}
 }
 
+// SetLog updates the logger used by the client.
+func (c *Client) SetLog(logger LeveledLoggerInterface) {
+	c.log = logger
+}
+
 // WithTimeout Timeout config option
 func WithTimeout(timeout time.Duration) Option {
 	return func(c *Client) {
