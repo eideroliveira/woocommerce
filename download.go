@@ -1,11 +1,14 @@
 package woocommerce
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const (
@@ -18,6 +21,14 @@ const (
 type FileService interface {
 	Get(file string) (*File, error)
 	GetStream(file string) (*FileDownload, error)
+	GetMeta(file string) (*FileMeta, error)
+}
+
+// FileMeta contains file metadata returned by the download-meta endpoint.
+type FileMeta struct {
+	Filename     string `json:"filename"`
+	Size         int64  `json:"size"`
+	LastModified int64  `json:"last_modified"`
 }
 
 // FileServiceOp handles communication with the files related methods of WooCommerce restful api
@@ -85,9 +96,6 @@ func (w *FileServiceOp) Get(file string) (*File, error) {
 func (w *FileServiceOp) GetStream(file string) (*FileDownload, error) {
 	relPath := fmt.Sprintf("%s/%s", filesBasePath, file)
 
-	// Build the request using the client's auth and base URL with the API
-	// path prefix, but stream the response ourselves instead of going
-	// through the JSON decode path.
 	req, err := w.Client.NewAPIRequest("GET", relPath, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
@@ -102,40 +110,86 @@ func (w *FileServiceOp) GetStream(file string) (*FileDownload, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
-		// Read a small portion of the error response for diagnostics
 		errBody := make([]byte, 1024)
 		n, _ := io.ReadFull(resp.Body, errBody)
 		return nil, fmt.Errorf("http %d downloading %s: %s", resp.StatusCode, file, string(errBody[:n]))
 	}
 
-	// Extract filename from Content-Disposition header or fall back to the URL path
-	filename := filepath.Base(file)
-	if cd := resp.Header.Get("Content-Disposition"); cd != "" {
-		// Simple extraction — look for filename= in the header
-		if i := len("filename="); len(cd) > i {
-			for _, part := range splitDisposition(cd) {
-				if len(part) > len("filename=") && part[:len("filename=")] == "filename=" {
-					filename = trimQuotes(part[len("filename="):])
-					break
-				}
+	// The download endpoint returns JSON: {"filename":"...", "content":"<base64>"}
+	// We stream-decode to avoid buffering the entire file in memory.
+	dec := json.NewDecoder(resp.Body)
+
+	// Expect opening {
+	if _, err := dec.Token(); err != nil {
+		return nil, fmt.Errorf("expected JSON object start: %w", err)
+	}
+
+	var filename string
+	var tmp *os.File
+	var written int64
+
+	for dec.More() {
+		// Read field name
+		tok, err := dec.Token()
+		if err != nil {
+			return nil, fmt.Errorf("reading JSON key: %w", err)
+		}
+		key, ok := tok.(string)
+		if !ok {
+			continue
+		}
+
+		switch key {
+		case "filename":
+			var name string
+			if err := dec.Decode(&name); err != nil {
+				return nil, fmt.Errorf("decoding filename: %w", err)
+			}
+			filename = name
+
+		case "content":
+			// Stream-decode the base64 value directly to a temp file.
+			// Read the raw base64 string token, decode in chunks.
+			tok, err := dec.Token()
+			if err != nil {
+				return nil, fmt.Errorf("reading content token: %w", err)
+			}
+			b64str, ok := tok.(string)
+			if !ok {
+				return nil, fmt.Errorf("expected string for content, got %T", tok)
+			}
+
+			tmp, err = os.CreateTemp("", "wc-dl-*")
+			if err != nil {
+				return nil, fmt.Errorf("creating temp file: %w", err)
+			}
+
+			// Decode the base64 string in chunks to the temp file
+			b64Reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(b64str))
+			written, err = io.Copy(tmp, b64Reader)
+			if err != nil {
+				tmp.Close()
+				os.Remove(tmp.Name())
+				return nil, fmt.Errorf("decoding base64 content: %w", err)
+			}
+
+		default:
+			// Skip unknown fields
+			var discard json.RawMessage
+			if err := dec.Decode(&discard); err != nil {
+				return nil, fmt.Errorf("skipping field %s: %w", key, err)
 			}
 		}
 	}
 
-	// Stream response body to a temp file
-	tmp, err := os.CreateTemp("", "wc-dl-*")
-	if err != nil {
-		return nil, fmt.Errorf("creating temp file: %w", err)
+	if tmp == nil {
+		return nil, fmt.Errorf("no content field found in download response for %s", file)
 	}
 
-	written, err := io.Copy(tmp, resp.Body)
-	if err != nil {
-		tmp.Close()
-		os.Remove(tmp.Name())
-		return nil, fmt.Errorf("streaming to temp file: %w", err)
+	if filename == "" {
+		filename = filepath.Base(file)
 	}
 
-	// Seek back to start so the caller can read from the beginning
 	if _, err := tmp.Seek(0, io.SeekStart); err != nil {
 		tmp.Close()
 		os.Remove(tmp.Name())
@@ -145,6 +199,18 @@ func (w *FileServiceOp) GetStream(file string) (*FileDownload, error) {
 	w.Client.log.Infof("FileServiceOp.GetStream: file=%s, size=%d, tmp=%s", filename, written, tmp.Name())
 
 	return &FileDownload{Name: filename, tmpFile: tmp}, nil
+}
+
+// GetMeta retrieves file metadata (size, filename, last_modified) without
+// downloading the file content. Uses the download-meta endpoint.
+func (w *FileServiceOp) GetMeta(file string) (*FileMeta, error) {
+	path := fmt.Sprintf("download-meta/%s", file)
+	resource := new(FileMeta)
+	_, err := w.Client.createAndDoGetHeaders("GET", path, nil, nil, resource)
+	if err != nil {
+		return nil, err
+	}
+	return resource, nil
 }
 
 // splitDisposition splits a Content-Disposition header value by semicolons and trims whitespace.
