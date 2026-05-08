@@ -214,18 +214,6 @@ type Download struct {
 	File string `json:"file"`
 }
 
-type ProductCategory struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Slug string `json:"slug"`
-}
-
-type ProductTag struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Slug string `json:"slug"`
-}
-
 type ProductImage struct {
 	ID              int        `json:"id"`
 	DateCreated     StringTime `json:"date_created"`
