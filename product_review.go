@@ -8,6 +8,22 @@ const (
 	productReviewsBasePath = "products/reviews"
 )
 
+type ProductReview struct {
+	ID                 int64  `json:"id,omitempty"`
+	DateCreated        string `json:"date_created,omitempty"`
+	DateCreatedGmt     string `json:"date_created_gmt,omitempty"`
+	ProductID          int64  `json:"product_id,omitempty"`
+	ProductName        string `json:"product_name,omitempty"`
+	ProductPermalink   string `json:"product_permalink,omitempty"`
+	Status             string `json:"status,omitempty"`
+	Reviewer           string `json:"reviewer,omitempty"`
+	ReviewerEmail      string `json:"reviewer_email,omitempty"`
+	Review             string `json:"review,omitempty"`
+	Rating             int    `json:"rating,omitempty"`
+	Verified           bool   `json:"verified,omitempty"`
+	ReviewerAvatarURLs map[string]string `json:"reviewer_avatar_urls,omitempty"`
+}
+
 type ProductReviewService interface {
 	Create(review ProductReview) (*ProductReview, error)
 	Get(reviewID int64, options interface{}) (*ProductReview, error)
