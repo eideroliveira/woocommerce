@@ -313,8 +313,9 @@ func (c *Client) logRequest(req *http.Request) {
 		return
 	}
 	if req.URL != nil {
+		// Headers are deliberately not logged: they carry the Authorization
+		// bearer token, and Debug is this client's default level.
 		c.log.Debugf("%s: %s", req.Method, req.URL.String())
-		c.log.Debugf("%s", req.Header)
 	}
 	c.logBody(&req.Body, "SENT: %s")
 }
