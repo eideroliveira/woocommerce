@@ -93,7 +93,7 @@ func NewClient(app App, shopName string, opts ...Option) *Client {
 		Client: &http.Client{
 			Timeout: time.Second * defaultHttpTimeout,
 		},
-		log:        &LeveledLogger{Level: LevelDebug},
+		log:        &LeveledLogger{Level: LevelInfo},
 		app:        app,
 		baseURL:    baseURL,
 		version:    defaultVersion,
@@ -168,7 +168,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 
 		if rateLimitErr, isRetryErr := respErr.(RateLimitError); isRetryErr {
 			wait := time.Duration(rateLimitErr.RetryAfter) * time.Second
-			c.log.Debugf("rate limited waiting %s", wait.String())
+			c.log.Infof("rate limited waiting %s", wait.String())
 			time.Sleep(wait)
 			retries--
 			continue
@@ -177,7 +177,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 		var doRetry bool
 		switch resp.StatusCode {
 		case http.StatusServiceUnavailable:
-			c.log.Debugf("service unavailable, retrying")
+			c.log.Infof("service unavailable, retrying")
 			doRetry = true
 			retries--
 		}

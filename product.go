@@ -347,7 +347,7 @@ func (o *ProductServiceOp) ListVariations(productID int64, options interface{}) 
 	return resource, err
 }
 
-var log = &LeveledLogger{Level: LevelDebug}
+var log = &LeveledLogger{Level: LevelInfo}
 
 // extractPagination extracts pagination info from linkHeader.
 // Details on the format are here:
